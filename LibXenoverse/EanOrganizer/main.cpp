@@ -1,5 +1,6 @@
 #include "LibXenoverse.h"
 #include <iostream>
+#include <map>
 
 #define BUFLEN 1024
 
@@ -36,7 +37,6 @@ std::string readLine()
 		c = getchar();
 		if (c != '\n')
 		{
-			putchar(c);
 			line += string((char*)&c);
 		}
 		else{
@@ -54,43 +54,75 @@ int main(int argc, char** argv)
 
 	LibXenoverse::initializeDebuggingLog();
 
-	printf("Welcome to Ean organizer v0.1\n\n");
+	printf("Welcome to Ean organizer v0.8.5kx\n\n");
 
 
-	string help = "Commands: \n\
-		'Help' to see this list\n\
-		'Load <path\\filenameEanFile> <file2.ean> ... ' load a ean file\n\
-		'Save <indexEan> <path\\filename>' save your modified ean file\n\
-		'GetEanFileList'\n\
-		'GetAnimList <Eanindex>'\n\
-		'Copy <indexEan> <indexAnimation>' copy on a sort of clipboard the specified animation.\n\
-		'Paste <indexEan> <indexAnimation>' it will erase the previous destination animation by the animation in clipboard. you could add animation by using an out of range index, but it's temporary, just for working on .\n\
-		'Append <EanIndex> <indexAnimation>' Add the animation copyed at the last of specified animation. Notice, it will add one more keyframe because it's willl don't erase the last keyframe.\n\
-		'Cut <EanIndex> <indexAnimation> <indexKeyFrame_Start or -1> <indexKeyFrame_End or -1> ' Cut the animation to keep the range. -1 to have default value.\n\
-		'FixedPositionComponent <EanIndex> <indexAnimation> <indexBone> <component 'X' 'Y' or 'Z'>' Use the value on the first keyframe to replace all other keyframe , for all the component of a animation of a bone.\n\
-		'MovePositionComponent <EanIndex> <indexAnimation> <indexBone> <component 'X' 'Y' or 'Z'> X.xxx' apply a movement on all the animation for a component of position, of tha bone on a animation.\n\
-		'Rename <indexEan> <indexAnimation> <newName>'\n\
-		'Erase <EanIndex> <AnimIndex> <AnimIndex_rangeEnd>' erase only Animation in AnimIndex. but if you use AnimIndex_rangeEnd, it will erase the range between the two animaIndex.\n\
-		'Insert <indexEan> <indexAnimation>' insert an animation before index of Animation specified.\n\n\
-		'GetBoneList <indexEan>'\n\
-		'AddBoneFilter <indexEan> <indexBone1> <indexBone2> <indexBone3> ...' by using the filter, when you paste, all the destination animation wiil be not erased, just only for bone specified in filter. Ex: if you just copy the tails animation but not the body animation, just add bone of tail in filter.\n\
-		'AddAllBoneInFilterFor <indexEan> <indexBone1_notIn> <indexBone2_notIn> <indexBone3_notIn> ...' fast version to add all of but not the specified index.\n\
-		'AddBoneFilterPreset <indexEan> <presetName>' add a preselected list of bone to the filter. Preset are : 'torso', 'leg_left', 'leg_right', 'arm_left', 'arm_right', 'head', 'tail'.\n\
-		'GetBoneFilter' list all bones in filter by eanfile\n\
-		'ResetBoneFilter' clear the filter\n\
-		'PasteWithBoneFilter <indexEan> <indexAnimation>'\n\
-		'CopyPasteRange <indexEan_Src> <indexEan_Dest> <indexAnimation_Start> <indexAnimation_End> [indexAnimation_DestionationStart]' fast version of Copy and Paste, on a range of animations. indexAnimation_DestionationStart is a index for start the paste on destination. (that will add new aniamtion if up to number of animations of destination).\n\
-		'CopyPasteRange_WithBoneFilter <indexEan_Src> <indexEan_Dest> <indexAnimation_Start> <indexAnimation_End>  [indexAnimation_DestionationStart]' same for only bones in filter.\n\
-		'GetDuration <indexEan> <AnimIndex>' Get the duration of a animation in seconds\n\
-		'SetDuration <indexEan> <AnimIndex> X.xxx' Set the duration of a animation in second (float)\n\
-		'GetDuration <indexEan> <AnimIndex> <indexBone>' Get the duration of a animation for a bone\n\
-		'SetDuration <indexEan> <AnimIndex> <indexBone> X.xxx' Set the duration of a animation of a bone in second (float)\n\
-		'LoopAnimation <indexEan> <AnimIndex> <indexBone> X' Make X loop for a animation. indexBone = -1 for all bones\n\
-		'AddBoneOffsetScaleOnAnimationPosition <indexEan> <AnimIndex> <indexBone> <offsetToAdd_X> <offsetToAdd_Y> <offsetToAdd_Z> <scaleToMultiply_X> <scaleToMultiply_Y> <scaleToMultiply_Z>' (Experimental) Add a offset and multiply by a scale on a bone for a animation. Note : use -1 for AnimIndex to apply on all animations. Neutral Values are offsetToAdd: 0.0, scaleToMultiply: 1.0\n\
-		'MatchAnimationDuration <indexEAN_src> <indexEAN_toMatch> <indexAnimation_Start> <indexAnimation_End> ' the second Ean will have the same duration of the same Named animation from the Ean src. For a range of animations. Notice the range is about animations of the second Ean..\
-		'Quit'\n\
-		Notice: all index for bones can be replace by it's name.\n";
+	string help = "	Commands: \n\
+	<Required Parameter> [Optional Parameter]\n\n\
+	'Help [Command]' e.g. 'Help Load' for help with Load command\n\
+	'Load <path\\filenameEanFile> <file2.ean> ...'\n\
+	'Save <indexEan> <path\\filename>'\n\
+	'GetEanFileList'\n\
+	'GetAnimList <Eanindex>'\n\
+	'Copy <indexEan> <indexAnimation>'\n\
+	'Paste <indexEan> <indexAnimation>'\n\
+	'Append <EanIndex> <indexAnimation>'\n\
+	'Cut <EanIndex> <indexAnimation> <indexKeyFrame_Start or -1> <indexKeyFrame_End or -1>'\n\
+	'FixedPositionComponent <EanIndex> <indexAnimation> <indexBone> <component 'X' 'Y' or 'Z'>'\n\
+	'MovePositionComponent <EanIndex> <indexAnimation> <indexBone> <component 'X' 'Y' or 'Z'> X.xxx'\n\
+	'Rename <indexEan> <indexAnimation> <newName>'\n\
+	'Erase <EanIndex> <AnimIndex> [AnimIndex_rangeEnd]'\n\
+	'Insert <indexEan> <indexAnimation>'\n\
+	'GetBoneList <indexEan>'\n\
+	'AddBoneFilter <indexEan> <indexBone1> [indexBone2] [indexBone3] ...'\n\
+	'AddAllBoneInFilterFor <indexEan> <indexBone1_notIn> [indexBone2_notIn] [indexBone3_notIn] ...'\n\
+	'AddBoneFilterPreset <indexEan> <presetName>'\n\
+	'GetBoneFilter'\n\
+	'ResetBoneFilter'\n\
+	'PasteWithBoneFilter <indexEan> <indexAnimation>'\n\
+	'CopyPasteRange <indexEan_Src> <indexEan_Dest> <indexAnimation_Start> <indexAnimation_End> [indexAnimation_DestionationStart]'\n\
+	'CopyPasteRange_WithBoneFilter <indexEan_Src> <indexEan_Dest> <indexAnimation_Start> <indexAnimation_End> [indexAnimation_DestionationStart]'\n\
+	'GetDuration <indexEan> <AnimIndex> [indexBone]'\n\
+	'SetDuration <indexEan> <AnimIndex> [indexBone] X.xxx'\n\
+	'SetDurationInFrames <indexEan> <AnimIndex> [indexBone] X'\n\
+	'LoopAnimation <indexEan> <AnimIndex> <indexBone> X'\n\
+	'AddBoneOffsetScaleOnAnimationPosition <indexEan> <AnimIndex> <indexBone> <offsetToAdd_X> <offsetToAdd_Y> <offsetToAdd_Z> <scaleToMultiply_X> <scaleToMultiply_Y> <scaleToMultiply_Z>'\n\
+	'MatchAnimationDuration <indexEAN_src> <indexEAN_toMatch> <indexAnimation_Start> <indexAnimation_End>'\n\
+	'Quit'\n\
+	\n\
+	note: <indexBone> can be substituted with the bone name, e.g. AddBoneFilter 0 b_R_Arm1\n";
 
+	std::map<string, string> helptext;
+	helptext["HELP"] = "Help:\nList all commands\n\n";
+	helptext["LOAD"] = "Load:\nLoad an EAN file\n\n";
+	helptext["SAVE"] = "Save:\nSave your modified EAN file\n\n";
+	helptext["GETEANFILELIST"] = "Load:\nGet list of loaded EAN files\n\n";
+	helptext["GETANIMLIST"] = "Load:\nGet list of animations within a specified EAN file\n\n";
+	helptext["GETBONELIST"] = "Load:\nGet list of bones within a specified EAN file\n\n";	
+	helptext["RENAME"] = "Load:\nRename a specified animation\n\n";
+	helptext["COPY"] = "Copy:\nCopy on the specified animation to clipboard\n\n";
+	helptext["PASTE"] = "Paste:\nPaste clipboard animation OVER destination animation\n\n";
+	helptext["APPEND"] = "Append:\nAdd the animation to an EAN.\n	Note: A new keyframe will be added to the end, do not delete\n\n";
+	helptext["CUT"] = "Cut:\nCut the animation to keep the range. Use -1 to for default value\n\n";
+	helptext["FIXEDPOSITIONCOMPONENT"] = "FixedPositionComponent:\n	Use the value on the first keyframe to replace all other keyframes, for all the component of a animation of a bone\n\n";
+	helptext["MOVEPOSITIONCOMPONENT"] = "MovePositionComponent:\n	Move the animation for a component of position of the bone on an animation\n\n";
+	helptext["ERASE"] = "Erase:\nErase only Animation in AnimIndex\n	If you use [AnimIndex_rangeEnd], it will erase the entire range between the two animIndex\n\n";
+	helptext["INSERT"] = "Insert:\nInsert an animation before index of Animation specified\n\n";
+	helptext["ADDBONEFILTER"] = "AddBoneFilter:\nBy using the filter, when you paste with bone filter, only the specified bones will be affected\n	If you justto copy the animation from the tail, only specify the tail bones	<boneIndex> can be substituted for bone names e.g. b_R_Arm1\n\n";
+	helptext["GETBONEFILTER"] = "Load:\nGet bones currently in the bone filter\n\n";
+	helptext["ADDALLBONEINFILTERFOR"] = "AddAllBoneInFilterFor:\nQuick way to add all bones to filter except for the bones specified\n\n";
+	helptext["ADDBONEFILTERPRESET"] = "AddBoneFilterPreset:\nAdd a preset list of bones to the bone filter:\n\n	'torso'\n	'head'\n	'arms'\n	'arm_left'\n	'arm_right'\n	'hands'\n	'hand_left'\n	'hand_right'\n	'legs'\n	'leg_left'\n	'leg_right'\n	'tail'\n	'wings'\n	'spines'\n	'sword'\n	'cane'\n	'spear'\n	'accessories'\n\n";
+	helptext["RESETBONEFILTER"] = "ResetBoneFilter:\nClear the bonefilter\n\n";
+	helptext["PASTEWITHBONEFILTER"] = "PasteWithBoneFilter:\nPaste copied animation with bone filter'\n\n";
+	helptext["COPYPASTERANGE"] = "CopyPasteRange:\nCopy and paste a range of animations\n	[indexAnimation_DestionationStart] is a index for start the paste on destination. (that will add new aniamtion if up to number of animations of destination)\n\n";
+	helptext["COPYPASTERANGE_WITHBONEFILTER"] = "CopyPasteRange_WithBoneFilter:\nCopy and paste a range of animations with the bone filter\n	[indexAnimation_DestionationStart] will specify a start the paste on destination. (that will add new aniamtion if up to number of animations of destination)\n\n";
+	helptext["GETDURATION"] = "GetDuration:\nGet the duration of a animation\n	You can specify a bone with [indexBone] argument\n\n";
+	helptext["SETDURATION"] = "SetDuration:\nSet the duration of a animation\n	You can specify a bone with [indexBone] argument\n\n";
+	helptext["SETDURATIONINFRAMES"] = "SetDurationInFrames:\nSet the duration of a animation in frames\n	You can specify a bone with [indexBone] argument\n\n";
+	helptext["LOOPANIMATION"] = "LoopAnimation:\nLoop the animation to increase the duration\n	You can specify a bone with [indexBone] argument\n\n";
+	helptext["ADDBONEOFFSETSCALEONANIMATIONPOSITION"] = "AddBoneOffsetScaleOnAnimationPosition:\nAdd an offset to a bone and/or multiply by scale.\n	Note: Use -1 for <AnimIndex> to apply to all animations.\n	Neutral Values: offsetToAdd: 0.0, scaleToMultiply: 1.0\n\n";
+	helptext["MATCHANIMATIONDURATION"] = "MatchAnimationDuration:\nThe SECOND EAN will have the same duration of the animation from the source EAN\n\n";
+	helptext["QUIT"] = "Quit:\nExit the program\n\n";
 
 	printf((string("You could load many Ean File, get the animation list, copy an animation from a file to another with index. KEEP ORDER of animations if you want to use modified ean in game (need configurator).\n\"path with spaces\" is now allowed.\n") + help +"\n").c_str());
 
@@ -179,21 +211,33 @@ int main(int argc, char** argv)
 		//begin to work on Each case.
 
 		string command = arguments.at(0);
+        std::transform(command.begin(), command.end(), command.begin(), ::toupper);
 		arguments.erase(arguments.begin());
 		nbArg = arguments.size();
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		if (command == "Quit")
+		if (command == "QUIT")
 		{
 			break;
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "Help"){
-			printf("\n\n%s\n",help.c_str());
+		}else if (command == "HELP"){
+			if (nbArg > 0)
+			{
+				string commandKey = arguments.at(0);
+                std::transform(commandKey.begin(), commandKey.end(), commandKey.begin(), ::toupper);
+				if (helptext.count(commandKey) == 0){
+					printf("\n\nCommand doesn't exist.  Type Help for the full list of commands");
+					continue;
+				}
+				printf("\n\n%s", helptext.find(commandKey)->second);
+			}else{
+				printf("\n\n%s\n",help.c_str());
+			}
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "Load"){
+		}else if (command == "LOAD"){
 	
 
 			size_t inc = 0;
@@ -232,7 +276,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "Save"){
+		}else if (command == "SAVE"){
 
 			if (nbArg < 2)
 			{
@@ -256,7 +300,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "GetEanFileList"){
+		}else if (command == "GETEANFILELIST"){
 
 			size_t nbFile = listFileName.size();
 			for (size_t i = 0; i < nbFile; i++)
@@ -264,7 +308,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "GetAnimList"){
+		}else if (command == "GETANIMLIST"){
 
 			if (nbArg == 0)
 			{
@@ -288,7 +332,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "GetBoneList"){
+		}else if (command == "GETBONELIST"){
 
 			if (nbArg == 0)
 			{
@@ -317,7 +361,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "GetBoneFilter"){
+		}else if (command == "GETBONEFILTER"){
 
 			size_t nbEanFileFilter = mListBoneFilters.size();
 
@@ -334,7 +378,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "CopyPasteRange_WithBoneFilter"){
+		}else if (command == "COPYPASTERANGE_WITHBONEFILTER"){
 
 			if (nbArg < 4)
 			{
@@ -426,7 +470,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "CopyPasteRange"){
+		}else if (command == "COPYPASTERANGE"){
 
 			if (nbArg < 4)
 			{
@@ -505,7 +549,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "Copy"){
+		}else if (command == "COPY"){
 
 			if (nbArg < 2)
 			{
@@ -532,7 +576,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "PasteWithBoneFilter"){
+		}else if (command == "PASTEWITHBONEFILTER"){
 
 			if (nbArg < 2)
 			{
@@ -587,7 +631,7 @@ int main(int argc, char** argv)
 			
 			
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "Paste"){
+		}else if (command == "PASTE"){
 
 			if (nbArg < 2)
 			{
@@ -630,7 +674,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "Append") {
+		}else if (command == "APPEND") {
 
 			if (nbArg < 2)
 			{
@@ -671,7 +715,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "Cut") {
+		}else if (command == "CUT") {
 
 			if (nbArg < 4)
 			{
@@ -705,7 +749,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "FixedPositionComponent") {
+		}else if (command == "FIXEDPOSITIONCOMPONENT") {
 
 			if (nbArg < 4)
 			{
@@ -789,7 +833,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		} else if (command == "MovePositionComponent") {
+		} else if (command == "MOVEPOSITIONCOMPONENT") {
 
 			if (nbArg < 5)
 			{
@@ -873,7 +917,7 @@ int main(int argc, char** argv)
 
 			
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "ResetBoneFilter"){
+		}else if (command == "RESETBONEFILTER"){
 
 			mListBoneFilters.clear();
 			mListBoneFilters_eanIndex.clear();
@@ -882,7 +926,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "AddBoneFilter"){
+		}else if (command == "ADDBONEFILTER"){
 
 			if (nbArg < 1)
 			{
@@ -945,7 +989,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "AddAllBoneInFilterFor"){
+		}else if (command == "ADDALLBONEINFILTERFOR"){
 
 			if (nbArg < 1)
 			{
@@ -1027,7 +1071,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "AddBoneFilterPreset") {
+		}else if (command == "ADDBONEFILTERPRESET") {
 
 			if (nbArg < 2)
 			{
@@ -1041,11 +1085,20 @@ int main(int argc, char** argv)
 			{
 				line = "AddBoneFilter " + indexFile_str + " b_C_Base b_C_Pelvis g_C_Pelvis b_C_Spine1 b_C_Spine2 b_C_Chest";
 				automaticLine = true;
+			}else if (presetName == "head") {
+				line = "AddBoneFilter " + indexFile_str + " b_C_Neck1 b_C_Head g_C_Head f_C_FaceRoot f_L_EyeInnerCorner f_R_EyeCorner f_L_EyeSocket f_C_ToothTop f_C_Jaw f_L_MouthBottom f_C_MouthBottom f_R_MouthBottom f_C_Tongue1 f_C_Tongue2 f_C_Tongue3 f_C_Tongue4 f_C_ToothBottom f_L_EyeCorner f_L_EyeBrows1 f_L_EyeBrows2 f_L_EyeBrows3 f_L_EyeBrowsHair3 f_L_EyeBrowsHair2 f_L_EyeBrowsHair1 f_L_CheekTop f_R_Eye f_R_EyeIris f_L_Eye f_L_EyeIris f_C_JawHalf f_L_MouthCorners f_L_CheekBottom f_R_CheekBottom f_R_MouthCorners f_C_NoseTop f_C_MouthTop f_L_EyelidBottom f_L_EyelidTop f_R_CheekTop f_R_EyeInnerCorner f_R_EyeSocket f_R_EyelidBottom f_R_EyelidTop f_R_EyeBrows1 f_R_EyeBrows2 f_R_EyeBrows3 f_R_EyeBrowsHair3 f_R_EyeBrowsHair2 f_R_EyeBrowsHair1 f_R_MouthTop f_L_MouthTop";
+				automaticLine = true;
+			}else if (presetName == "legs") {
+				line = "AddBoneFilter " + indexFile_str + " b_L_Leg1 b_L_Leg2 b_L_Foot g_L_Foot b_L_Toe b_L_Knee b_L_LegHelper b_R_Leg1 b_R_Leg2 b_R_Foot g_R_Foot b_R_Toe b_R_Knee b_R_LegHelper";
+				automaticLine = true;
 			}else if (presetName == "leg_left") {
 				line = "AddBoneFilter " + indexFile_str + " b_L_Leg1 b_L_Leg2 b_L_Foot g_L_Foot b_L_Toe b_L_Knee b_L_LegHelper";
 				automaticLine = true;
 			}else if (presetName == "leg_right") {
 				line = "AddBoneFilter " + indexFile_str + " b_R_Leg1 b_R_Leg2 b_R_Foot g_R_Foot b_R_Toe b_R_Knee b_R_LegHelper";
+				automaticLine = true;
+			}else if (presetName == "arms") {
+				line = "AddBoneFilter " + indexFile_str + " b_L_Shoulder b_L_Arm1 b_L_Arm2 b_L_Hand h_L_Middle1 h_L_Middle2 h_L_Middle3 g_L_Hand h_L_Pinky1 h_L_Pinky2 h_L_Pinky3 h_L_Ring1 h_L_Ring2 h_L_Ring3 h_L_Index1 h_L_Index2 h_L_Index3 h_L_Thumb1 h_L_Thumb2 h_L_Thumb3 b_L_ArmRoll b_L_Elbow b_L_ArmHelper b_L_ArmorParts b_R_Shoulder b_R_Arm1 b_R_Elbow b_R_Arm2 b_R_Hand h_R_Middle1 h_R_Middle2 h_R_Middle3 g_R_Hand h_R_Pinky1 h_R_Pinky2 h_R_Pinky3 h_R_Ring1 h_R_Ring2 h_R_Ring3 h_R_Index1 h_R_Index2 h_R_Index3 h_R_Thumb1 h_R_Thumb2 h_R_Thumb3 b_R_ArmRoll b_R_ArmHelper b_R_ArmorParts";
 				automaticLine = true;
 			}else if (presetName == "arm_left") {
 				line = "AddBoneFilter " + indexFile_str + " b_L_Shoulder b_L_Arm1 b_L_Arm2 b_L_Hand h_L_Middle1 h_L_Middle2 h_L_Middle3 g_L_Hand h_L_Pinky1 h_L_Pinky2 h_L_Pinky3 h_L_Ring1 h_L_Ring2 h_L_Ring3 h_L_Index1 h_L_Index2 h_L_Index3 h_L_Thumb1 h_L_Thumb2 h_L_Thumb3 b_L_ArmRoll b_L_Elbow b_L_ArmHelper b_L_ArmorParts";
@@ -1053,11 +1106,35 @@ int main(int argc, char** argv)
 			}else if (presetName == "arm_right") {
 				line = "AddBoneFilter " + indexFile_str + " b_R_Shoulder b_R_Arm1 b_R_Elbow b_R_Arm2 b_R_Hand h_R_Middle1 h_R_Middle2 h_R_Middle3 g_R_Hand h_R_Pinky1 h_R_Pinky2 h_R_Pinky3 h_R_Ring1 h_R_Ring2 h_R_Ring3 h_R_Index1 h_R_Index2 h_R_Index3 h_R_Thumb1 h_R_Thumb2 h_R_Thumb3 b_R_ArmRoll b_R_ArmHelper b_R_ArmorParts";
 				automaticLine = true;
-			}else if (presetName == "head") {
-				line = "AddBoneFilter " + indexFile_str + " b_C_Neck1 b_C_Head g_C_Head f_C_FaceRoot f_L_EyeInnerCorner f_R_EyeCorner f_L_EyeSocket f_C_ToothTop f_C_Jaw f_L_MouthBottom f_C_MouthBottom f_R_MouthBottom f_C_Tongue1 f_C_Tongue2 f_C_Tongue3 f_C_Tongue4 f_C_ToothBottom f_L_EyeCorner f_L_EyeBrows1 f_L_EyeBrows2 f_L_EyeBrows3 f_L_EyeBrowsHair3 f_L_EyeBrowsHair2 f_L_EyeBrowsHair1 f_L_CheekTop f_R_Eye f_R_EyeIris f_L_Eye f_L_EyeIris f_C_JawHalf f_L_MouthCorners f_L_CheekBottom f_R_CheekBottom f_R_MouthCorners f_C_NoseTop f_C_MouthTop f_L_EyelidBottom f_L_EyelidTop f_R_CheekTop f_R_EyeInnerCorner f_R_EyeSocket f_R_EyelidBottom f_R_EyelidTop f_R_EyeBrows1 f_R_EyeBrows2 f_R_EyeBrows3 f_R_EyeBrowsHair3 f_R_EyeBrowsHair2 f_R_EyeBrowsHair1 f_R_MouthTop f_L_MouthTop";
+			}else if (presetName == "hands") {
+				line = "AddBoneFilter " + indexFile_str + " b_L_Hand h_L_Middle1 h_L_Middle2 h_L_Middle3 g_L_Hand h_L_Pinky1 h_L_Pinky2 h_L_Pinky3 h_L_Ring1 h_L_Ring2 h_L_Ring3 h_L_Index1 h_L_Index2 h_L_Index3 h_L_Thumb1 h_L_Thumb2 h_L_Thumb3 b_R_Hand h_R_Middle1 h_R_Middle2 h_R_Middle3 g_R_Hand h_R_Pinky1 h_R_Pinky2 h_R_Pinky3 h_R_Ring1 h_R_Ring2 h_R_Ring3 h_R_Index1 h_R_Index2 h_R_Index3 h_R_Thumb1 h_R_Thumb2 h_R_Thumb3";
+				automaticLine = true;
+			}else if (presetName == "hand_left") {
+				line = "AddBoneFilter " + indexFile_str + " b_L_Hand h_L_Middle1 h_L_Middle2 h_L_Middle3 g_L_Hand h_L_Pinky1 h_L_Pinky2 h_L_Pinky3 h_L_Ring1 h_L_Ring2 h_L_Ring3 h_L_Index1 h_L_Index2 h_L_Index3 h_L_Thumb1 h_L_Thumb2 h_L_Thumb3";
+				automaticLine = true;
+			}else if (presetName == "hand_right") {
+				line = "AddBoneFilter " + indexFile_str + " b_R_Hand h_R_Middle1 h_R_Middle2 h_R_Middle3 g_R_Hand h_R_Pinky1 h_R_Pinky2 h_R_Pinky3 h_R_Ring1 h_R_Ring2 h_R_Ring3 h_R_Index1 h_R_Index2 h_R_Index3 h_R_Thumb1 h_R_Thumb2 h_R_Thumb3";
 				automaticLine = true;
 			}else if (presetName == "tail") {
 				line = "AddBoneFilter " + indexFile_str + " X_T_TAIL1 X_T_TAIL2 X_T_TAIL3 X_T_TAIL4 X_T_TAIL5 X_T_TAIL6 X_T_TAIL7 X_T_TAIL8 X_T_TAIL9 X_T_TAIL10";
+				automaticLine = true;
+			}else if (presetName == "spines") {
+				line = "AddBoneFilter " + indexFile_str + " x_x_backhorn x_L_backtophorn1 x_L_backtophorn2 x_R_backmiddlehorn1 x_R_backmiddlehorn2 x_R_backtophorn1 x_R_backtophorn2 x_L_backmiddlehorn1 x_L_backmiddlehorn2";
+				automaticLine = true;
+			}else if (presetName == "wings") {
+				line = "AddBoneFilter " + indexFile_str + " Wing_bases RWing_bases RWing_A RWing_B RWing_B_outsidethe1 RWing_B_outsidethe2 RWing_B_outsidethe3 RWing_B_outsidethe4 RWing_B_middle1 RWing_B_inside1 RWing_B_inside2 RWing_A1 RWing_A2 LWing_bases LWing_A LWing_B LWing_B_outsidethe1 LWing_B_outsidethe2 LWing_B_outsidethe3 LWing_B_outsidethe4 LWing_B_middle1 LWing_B_inside1 LWing_B_inside2 LWing_A1 LWing_A2";
+				automaticLine = true;
+			}else if (presetName == "sword") {
+				line = "AddBoneFilter " + indexFile_str + " a_x_sword1 a_x_sword2 a_x_sword3 a_x_sword4";
+				automaticLine = true;
+			}else if (presetName == "cane") {
+				line = "AddBoneFilter " + indexFile_str + " a_x_cane_root a_x_cane_front1 a_x_cane_front2 a_x_cane_back1";
+				automaticLine = true;
+			}else if (presetName == "spear") {
+				line = "AddBoneFilter " + indexFile_str + " a_x_spear_root a_x_spear_front1 a_x_spear_front2 a_x_spear_front3 a_x_spear_back1 a_x_spear_back2 a_x_spear_back3";
+				automaticLine = true;
+			}else if (presetName == "accessories") {
+				line = "AddBoneFilter " + indexFile_str + " a_x_flute a_x_glasses";
 				automaticLine = true;
 			}else {
 				printf("Unknow preset's name. try 'Help' command\n");
@@ -1068,7 +1145,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "Rename"){
+		}else if (command == "RENAME"){
 
 			if (nbArg < 3)
 			{
@@ -1093,7 +1170,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "Erase"){
+		}else if (command == "ERASE"){
 
 			if (nbArg < 2)
 			{
@@ -1131,7 +1208,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "Insert"){
+		}else if (command == "INSERT"){
 
 			if (nbArg < 2)
 			{
@@ -1170,7 +1247,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "AddBoneOffsetScaleOnAnimationPosition"){
+		}else if (command == "ADDBONEOFFSETSCALEONANIMATIONPOSITION"){
 
 			if (nbArg < 9)
 			{
@@ -1249,7 +1326,7 @@ int main(int argc, char** argv)
 
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "GetDuration"){
+		}else if (command == "GETDURATION"){
 
 			if (nbArg < 2)
 			{
@@ -1316,7 +1393,7 @@ int main(int argc, char** argv)
 
 	
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "SetDuration"){
+		}else if (command == "SETDURATION" || command == "SETDURATIONINFRAMES"){
 
 			if (nbArg < 2)
 			{
@@ -1360,7 +1437,13 @@ int main(int argc, char** argv)
 				LibXenoverse::EANAnimation *animation = &(eanFile->getAnimations().at(indexAnim));
 
 				size_t original_Duration_inFrames = (size_t)-1;
-				size_t target_Duration_inFrames = (size_t)round(duration / (1.0 / 60.0));
+				size_t target_Duration_inFrames = (size_t)0;
+				if(command == "SETDURATION") 
+				{
+					target_Duration_inFrames = (size_t)round(duration * 60.0);
+				}else{
+					target_Duration_inFrames = (size_t)round(duration);
+				}
 				if (target_Duration_inFrames == 0)
 					target_Duration_inFrames = 1;
 
@@ -1468,7 +1551,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "LoopAnimation"){
+		}else if (command == "LOOPANIMATION"){
 
 			if (nbArg < 2)
 			{
@@ -1603,7 +1686,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "MatchAnimationDuration"){
+		}else if (command == "MATCHANIMATIONDURATION"){
 			
 			if (nbArg < 4)
 			{
