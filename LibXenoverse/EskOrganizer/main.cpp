@@ -1,6 +1,8 @@
 #include "LibXenoverse.h"
 #include <iostream>
 
+#include <map>
+
 #define BUFLEN 1024
 
 
@@ -37,7 +39,6 @@ std::string readLine()
 		c = getchar();
 		if (c != '\n')
 		{
-			putchar(c);
 			line += string((char*)&c);
 		}
 		else{
@@ -55,44 +56,72 @@ int main(int argc, char** argv)
 
 	LibXenoverse::initializeDebuggingLog();
 
-	printf("Welcome to Esk organizer v0.1\n\n");
+	printf("Welcome to Esk organizer v0.6.1kx\n\n");
 
 
-	string help = "Commands: \n\
-		'Help' to see this list\n\
-		'Load <path\\filenameEskFile> <file2.ext> ...' load a esk file (or ean file, because there is a esk part into)\n\
-		'Save <indexEsk> <path\\filename>' save your modified esk (or ean) file\n\
-		'GetEskFileList'\n\
-		'GetBoneList <indexEsk> <useTree>' if useTree is 'true', you will parent-child relation, if 'false' just the list byIndex\n\
-		'Rename <indexEsk> <indexBone> <newName> <renameAlsoIntoEmdFile>' notice you could use the name of the bone for indexBone. if you use renameAlsoIntoEmdFile at true, it will also rename bone in all Emd File loaded.\n\
-		'Remove <indexEsk> <indexBone> <recursive>' Delete the specified bone. delete also its children if recursive is true (by defaut)\n\
-		'Copy <indexEsk> <indexBone> <recursive>' Copy a bone. and its children if recursive is at true (by default)\n\
-		'Paste <indexEsk> <indexBone> <alsoCopyAnimation> <matchDuration>' Paste bones Copyed on Child of bone specified by indexBone. in case of source and destination are Ean file, alsoCopyAnimation at 'true' will be also copy animation, and in this case matchDuration at 'true' will resampling source animation to match with destination animation (from other bones of destination file), helpfull for cycling animations.\n\
-		'CalculTransformMatrixFromSkinningMatrix <indexEsk> <indexBone> ' (Experimentale)Read the Skinning Matrix (with Relative information about Transfrom) to make the transformMatrix (absolute informations), beacause Ean have esk part without transformMatrix. So you will could make a esk from ean, by using this methode and rename root bone. if indexEsk==-1 it will be on all bones\n\
-		'ClearTransformMatrix <indexEsk> <indexBone> ' remove TranformMatrix. is to clean for a Ean  file. if indexEsk==-1 it will be on all bones\n\
-		'CalculSkinningMatrixFromTransformMatrix <indexEsk> <indexBone> ' (Experimentale)Inverse opeartion.\n\
-		'ClearSkinningMatrix <indexEsk> <indexBone>' remove SkinningMatrix.\n\
-		'getJson <indexEsk>' for tests comparaisons.\n\
-		'GetBonePosition <indexEsk> <indexBone> <absolute>' get the bone position, absolute (from transformMatrix) if true (else relative, so from SkinningMatrix).\n\
-		'GetBoneOrientation <indexEsk> <indexBone> <absolute>' get the bone quaternion information of the orientation, absolute if true (else relative).\n\
-		'GetBoneScale <indexEsk> <indexBone> <absolute>' get the bone position, absolute if true (else relative).\n\
-		'SetBonePosition <indexEsk> <indexBone> <posX> <posY> <posZ> <absolute>'.\n\
-		'SetBoneOrientation <indexEsk> <indexBone> <quatX> <quatY> <quatZ> <quatW> <absolute>' set by using quaternion definition.\n\
-		'SetBoneScale <indexEsk> <indexBone> <scaleX> <scaleY> <scaleZ> <absolute>'.\n\
-		'Merge <indexEsk_src> <indexEsk_dest>' same merge fonction used by emdFbx. Merge Ean file, and if it jsut about esk, merge esk.\n\
-		'EMD_Load <path\\filenameEmdFile> [<path\\filenameEmdFile2> <path\\filenameEmdFile3> ...]' Load Emd (goal is to rename bones for mesh skinning). you could load many of files ones.\n\
-		'EMD_Save [<indexEmd> <path\\filename>]' save your modified emd. if you don't specify a emd in particular, all file will be saved with '_modified'.\n\
-		'EMD_GetEmdFileList'\n\
-		'EMD_GetBoneList <indexEmd>'\n\
-		'EMD_Rename' <indexEmd> <oldBoneName> <newBoneName>' rename bone into Emds, use -1 on indexEmd for apply on all Emd\n\
-		'Quit'\n";
+	string help = "Commands:\n\
+	<Required Argument> [Optional Argument]\n\n\
+	'Help [Command]' e.g. 'Help Load' for help with Load command\n\
+	'Load <path\\filenameEskFile> [file2.ext] ...'\n\
+	'Save <indexEsk> <path\\filename>'\n\
+	'GetEskFileList'\n\
+	'GetBoneList <indexEsk> [useTree]'\n\
+	'Rename <indexEsk> <indexBone> <newName> [renameAlsoIntoEmdFile]'\n\
+	'Remove <indexEsk> <indexBone> [recursive]'\n\
+	'Copy <indexEsk> <indexBone> [recursive]'\n\
+	'Paste <indexEsk> <indexBone> [alsoCopyAnimation] [matchDuration]'\n\
+	'CalculTransformMatrixFromSkinningMatrix <indexEsk> <indexBone>'\n\
+	'ClearTransformMatrix <indexEsk> <indexBone>'\n\
+	'CalculSkinningMatrixFromTransformMatrix <indexEsk> <indexBone>'\n\
+	'ClearSkinningMatrix <indexEsk> <indexBone>'\n\
+	'getJson <indexEsk>'\n\
+	'GetBonePosition <indexEsk> <indexBone> [absolute]'\n\
+	'GetBoneOrientation <indexEsk> <indexBone> [absolute]'\n\
+	'GetBoneScale <indexEsk> <indexBone> [absolute]'\n\
+	'SetBonePosition <indexEsk> <indexBone> <posX> <posY> <posZ> [absolute]'\n\
+	'SetBoneOrientation <indexEsk> <indexBone> <quatX> <quatY> <quatZ> <quatW> [absolute]'\n\
+	'SetBoneScale <indexEsk> <indexBone> <scaleX> <scaleY> <scaleZ> [absolute]'\n\
+	'Merge <indexEsk_src> <indexEsk_dest>'\n\
+	'EMD_Load <path\\filenameEmdFile> [<path\\filenameEmdFile2> <path\\filenameEmdFile3> ...]'\n\
+	'EMD_Save <indexEmd> <path\\filename>'\n\
+	'EMD_GetEmdFileList'\n\
+	'EMD_GetBoneList <indexEmd>'\n\
+	'EMD_Rename <indexEmd> <oldBoneName> <newBoneName>'\n\
+	'Quit'\n";
 
 	//'GetBoneRotation <indexEsk> <indexBone> <absolute>' get the bone taitBryan angles (know also as EulerAngle, with the diference to have this order : RotY (Yaw) -> RotZ (pitch) -> RotX (Roll) like a plane) information of the orientation, absolute if true (else relative).\n\
 	//'SetBoneRotation <indexEsk> <indexBone> <RotY> <RotZ> <RotX> <absolute>' see GetBoneRotation.\n\
 				
-		
-
-	printf((string("You could load many Esk or ean File, get bone list.\nFor Paths, please avoid space.\nThere is One rule about bones : don't rename c_Base and root bone. and keep unique Names at the end\n") + help +"\n").c_str());
+	std::map<string, string> helptext;
+	helptext["HELP"] = "Help [Command]\nList all commands\n\n";
+	helptext["LOAD"] = "Load <path\\filenameEskFile> [file2.ext] ...\nLoad a skeleton from an ESK or EAN file\n\n";
+	helptext["SAVE"] = "Save <indexEsk> <path\\filename>\nSave your modified ESK or EAN file\n\n";
+	helptext["GETESKFILELIST"] = "GetEskFileList\nGet list of loaded ESK files\n\n";
+	helptext["GETBONELIST"] = "GetBoneList <indexEsk> [useTree]\nGet list of bones within a specified ESK file, use the argument 'true' to show parent-child relations\n\n";	
+	helptext["RENAME"] = "Rename <indexEsk> <indexBone> <newName> [renameAlsoIntoEmdFile]\nRename a specified bone, use [renameAlsoIntoEmdFile] to rename this in the EMF dile as well\n\n";
+	helptext["REMOVE"] = "Remove <indexEsk> <indexBone> [recursive]\nDelete a specified bone, also delete children if [recursive] is true\n\n";
+	helptext["COPY"] = "Copy <indexEsk> <indexBone> [recursive]\nCopy on the specified bone to clipboard, also copy children if [recursive] is true\n\n";
+	helptext["PASTE"] = "Paste <indexEsk> <indexBone> [alsoCopyAnimation] [matchDuration]\nPaste clipboard bone OVER destination bone, set [alsoCopyAnimation] and/or [matchDuration] arguments to true/false if desired\n\n";
+	helptext["CALCULTRANSFORMMATRIXFROMSKINNINGMATRIX"] = "CalculTransformMatrixFromSkinningMatrix <indexEsk> <indexBone>\nConvert the skinningMatrix to transformMatrix\nEAN have internal skeletons without transformMatrix, so this function is used to create an ESK from an EAN\nif indexEsk==-1 it will edit all bones\n\n";
+	helptext["CLEARTRANSFORMMATRIX"] = "ClearTransformMatrix <indexEsk> <indexBone>\nClear the transformMatrix\n\n";
+	helptext["CALCULSKINNINGMATRIXFROMTRANSFORMMATRIX"] = "CalculSkinningMatrixFromTransformMatrix <indexEsk> <indexBone>\nConvert the transformMatrix to skinningMatrix\nEAN have internal skeletons without transformMatrix, so this function is used to create an EAN from an ESK\nif indexEsk==-1 it will edit all bones\n\n";
+	helptext["CLEARSKINNINGMATRIX"] = "ClearSkinningMatrix <indexEsk> <indexBone>\nClear the skinningMatrix\n\n";
+	helptext["GETJSON"] = "getJson <indexEsk>\nFor test comparisons\n\n";
+	helptext["GETBONEPOSITION"] = "GetBonePosition <indexEsk> <indexBone> [absolute]\nGet the bone position as absolute (from transformMatrix) if [absolute] is true, or as releative (from skinningMatrix) if false\n\n";
+	helptext["GETBONEORIENTATION"] = "GetBoneOrientation <indexEsk> <indexBone> [absolute]\nGet the bone quaternion orientation, absolute if true (else relative)\n\n";
+	helptext["GETBONESCALE"] = "GetBoneScale <indexEsk> <indexBone> [absolute]\nGet the bone position, absolute if true (else relative)\n\n";
+	helptext["SETBONEPOSITION"] = "SetBonePosition <indexEsk> <indexBone> <posX> <posY> <posZ> [absolute]\nSet bone position, absolute if true (else relative)\n\n";
+	helptext["SETBONESCALE"] = "SetBoneScale <indexEsk> <indexBone> <scaleX> <scaleY> <scaleZ> [absolute]\nSet bone scale, absolute if true (else relative)\n\n";
+	helptext["MERGE"] = "Merge <indexEsk_src> <indexEsk_dest>\nMerge two ESK files, similar to EMDFBX process\n\n";
+	helptext["EMD_LOAD"] = "EMD_Load <path\\filenameEmdFile> [<path\\filenameEmdFile2> <path\\filenameEmdFile3> ...]\nLoad EMF file(/s)\n\n";
+	helptext["EMD_SAVE"] = "EMD_Save <indexEmd> <path\\filename>\nSave your modified EMD file\n\n";
+	helptext["EMD_GETEMDFILELIST"] = "EMD_GetEmdFileList\nGet list of loaded EMD files\n\n";
+	helptext["EMD_GETBONELIST"] = "EMD_GetBoneList <indexEmd>\nGet list of bones within a specified EMD file\n\n";
+	helptext["EMD_RENAME"] = "EMD_Rename <indexEmd> <oldBoneName> <newBoneName>\nRename specified bone within EMD file\n\n";
+	helptext["QUIT"] = "Quit\nExit the program\n\n";	
+	//helptext["GETBONEROTATION"] = "GetBoneRotation <indexEsk> <indexBone> [absolute]\nGet the bone taitBryan angles (know also as EulerAngle, with the diference to have this order : RotY (Yaw) -> RotZ (pitch) -> RotX (Roll) like a plane) information of the orientation, absolute if true (else relative)\n\n";
+	//helptext["SETBONEROTATION"] = "SetBoneRotation <indexEsk> <indexBone> <RotY> <RotZ> <RotX> [absolute]\nSet rotation of specified bone\n\n";
+	printf((string("You can load ESK, EAN, and EMD file and list their bones.\nPlease avoid using spaces in filepaths.\nDon't rename c_Base and root bone. Keep unique names at the end!\n\n") + help +"\n").c_str());
 
 
 	
@@ -138,7 +167,7 @@ int main(int argc, char** argv)
 
 	while ((arguments.size() == 0) || (arguments.at(0) != "Quit"))
 	{
-		printf("So, what do you want ?\n");
+		printf("So, what do you want to do next?\n");
 		line = readLine();
 		
 
@@ -199,23 +228,34 @@ int main(int argc, char** argv)
 		//begin to work on Each case.
 
 		string command = arguments.at(0);
+		std::transform(command.begin(), command.end(), command.begin(), ::toupper);
 		arguments.erase(arguments.begin());
 		nbArg = arguments.size();
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		if (command == "Quit")
+		if (command == "QUIT")
 		{
 			break;
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "Help"){
-			printf("%s",help.c_str());
-
+		}else if (command == "HELP"){
+			if (nbArg > 0)
+			{
+				string commandKey = arguments.at(0);
+				std::transform(commandKey.begin(), commandKey.end(), commandKey.begin(), ::toupper);
+				if (helptext.count(commandKey) == 0){
+					printf("\n\nCommand doesn't exist. Use Help for the full list of commands\n");
+					continue;
+				}
+				printf("\n\n%s", helptext.find(commandKey)->second);
+			}else{
+				printf("\n\n%s\n",help.c_str());
+			}
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "Load"){
+		}else if (command == "LOAD"){
 
 
 			size_t inc = 0;
@@ -261,11 +301,11 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "Save"){
+		}else if (command == "SAVE"){
 
 			if (nbArg < 2)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t index = std::stoi(arguments.at(0));
@@ -294,7 +334,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "GetEskFileList"){
+		}else if (command == "GETESKFILELIST"){
 
 			size_t nbFile = listEskFile.size();
 			for (size_t i = 0; i < nbFile; i++)
@@ -305,11 +345,11 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "GetBoneList"){
+		}else if (command == "GETBONELIST"){
 
 			if (nbArg < 1)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t index = std::stoi(arguments.at(0));
@@ -345,11 +385,11 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "Rename"){
+		}else if (command == "RENAME"){
 
 			if (nbArg < 3)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -386,11 +426,11 @@ int main(int argc, char** argv)
 		
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "Remove"){
+		}else if (command == "REMOVE"){
 
 			if (nbArg < 2)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -423,11 +463,11 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "Copy"){
+		}else if (command == "COPY"){
 
 			if (nbArg < 2)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -456,7 +496,7 @@ int main(int argc, char** argv)
 					eskOrganizer_Copy.mTreeNode = rootNode->getBoneWithIndex(boneIndex);
 					eskOrganizer_Copy.mRootToClean = rootNode;
 
-					printf("Copyed.\n");
+					printf("Copied.\n");
 				}else{
 					printf("boneIndex %i is not in list of bones.\n", boneIndex);
 				}
@@ -470,17 +510,17 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "Paste"){
+		}else if (command == "PASTE"){
 
 			if (eskOrganizer_Copy.mRootToClean == nullptr)
 			{
-				printf("Nothing Copyed. please use 'Copy' command before. try 'Help' command\n");
+				printf("Nothing Copied. please use 'Copy' command before. try 'Help' command\n");
 				continue;
 			}
 
 			if (nbArg < 2)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -529,14 +569,14 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////	
-		}else if ((command == "ClearTransformMatrix") || (command == "ClearSkinningMatrix")){
+		}else if ((command == "CLEARTRANSFORMMATRIX") || (command == "CLEARSKINNINGMATRIX")){
 
 			if (nbArg < 2)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
-			bool isSkinningMatrix = (command == "ClearSkinningMatrix");
+			bool isSkinningMatrix = (command == "CLEARSKINNINGMATRIX");
 			size_t indexFile = std::stoi(arguments.at(0));
 			string boneRef = arguments.at(1);
 
@@ -585,15 +625,15 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if ((command == "CalculTransformMatrixFromSkinningMatrix") || (command == "CalculSkinningMatrixFromTransformMatrix")){
+		}else if ((command == "CALCULTRANSFORMMATRIXFROMSKINNINGMATRIX") || (command == "CALCULSKINNINGMATRIXFROMTRANSFORMMATRIX")){
 
 			
 			if (nbArg < 2)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
-			bool isSkinningMatrix = (command == "CalculSkinningMatrixFromTransformMatrix");
+			bool isSkinningMatrix = (command == "CALCULSKINNINGMATRIXFROMTRANSFORMMATRIX");
 			size_t indexFile = std::stoi(arguments.at(0));
 			string boneRef = arguments.at(1);
 
@@ -633,24 +673,24 @@ int main(int argc, char** argv)
 
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if ((command == "GetBonePosition") || (command == "SetBonePosition")
-			|| (command == "GetBoneOrientation") || (command == "SetBoneOrientation")
-			|| (command == "GetBoneRotation") || (command == "SetBoneRotation")
-			|| (command == "GetBoneScale") || (command == "SetBoneScale")
+		}else if ((command == "GETBONEPOSITION") || (command == "SETBONEPOSITION")
+			|| (command == "GETBONEORIENTATION") || (command == "SETBONEORIENTATION")
+			|| (command == "GETBONEROTATION") || (command == "SETBONEROTATION")
+			|| (command == "GETBONESCALE") || (command == "SETBONESCALE")
 			){
 
 			size_t nbMinimumArg = 1;
-			if      (command == "SetBonePosition")		nbMinimumArg = 5;
-			else if (command == "GetBoneOrientation")	nbMinimumArg = 2;
-			else if (command == "SetBoneOrientation")	nbMinimumArg = 6;
-			else if (command == "GetBoneRotation")		nbMinimumArg = 2;
-			else if (command == "SetBoneRotation")		nbMinimumArg = 5;
-			else if (command == "GetBoneScale")			nbMinimumArg = 2;
-			else if (command == "SetBoneScale")			nbMinimumArg = 5;
+			if      (command == "SETBONEPOSITION")		nbMinimumArg = 5;
+			else if (command == "GETBONEORIENTATION")	nbMinimumArg = 2;
+			else if (command == "SETBONEORIENTATION")	nbMinimumArg = 6;
+			else if (command == "GETBONEROTATION")		nbMinimumArg = 2;
+			else if (command == "SETBONEROTATION")		nbMinimumArg = 5;
+			else if (command == "GETBONESCALE")			nbMinimumArg = 2;
+			else if (command == "SETBONESCALE")			nbMinimumArg = 5;
 
 			if (nbArg < nbMinimumArg)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -713,29 +753,29 @@ int main(int argc, char** argv)
 						}
 
 						bool isASet = false;
-						if (command == "GetBonePosition")
+						if (command == "GETBONEPOSITION")
 						{
 							printf("Position : %f, %f, %f\n", skinning_matrix[0], skinning_matrix[1], skinning_matrix[2]);
-						}else if (command == "GetBoneOrientation"){
+						}else if (command == "GETBONEORIENTATION"){
 							printf("Orientation (xyzw): %f, %f, %f, %f\n", skinning_matrix[4], skinning_matrix[5], skinning_matrix[6], skinning_matrix[7]);
-						}else if (command == "GetBoneRotation"){
+						}else if (command == "GETBONEROTATION"){
 							printf("TODO. sorry\n");
-						}else if (command == "GetBoneScale"){
+						}else if (command == "GETBONESCALE"){
 							printf("Scale : %f, %f, %f\n", skinning_matrix[8], skinning_matrix[9], skinning_matrix[10]);
-						}else if (command == "SetBonePosition"){
+						}else if (command == "SETBONEPOSITION"){
 							skinning_matrix[0] = vector.at(0);
 							skinning_matrix[1] = vector.at(1);
 							skinning_matrix[2] = vector.at(2);
 							isASet = true;
-						}else if (command == "SetBoneOrientation"){
+						}else if (command == "SETBONEORIENTATION"){
 							skinning_matrix[4] = vector.at(0);
 							skinning_matrix[5] = vector.at(1);
 							skinning_matrix[6] = vector.at(2);
 							skinning_matrix[7] = vector.at(3);
 							isASet = true;
-						}else if (command == "SetBoneRotation"){
+						}else if (command == "SETBONEROTATION"){
 							printf("TODO. sorry\n");
-						}else if (command == "SetBoneScale"){
+						}else if (command == "SETBONESCALE"){
 							skinning_matrix[8] = vector.at(0);
 							skinning_matrix[9] = vector.at(1);
 							skinning_matrix[10] = vector.at(2);
@@ -784,11 +824,11 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "getJson"){
+		}else if (command == "GETJSON"){
 
 			if (nbArg < 1)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -803,11 +843,11 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "Test"){
+		}else if (command == "TEST"){
 
 			if (nbArg < 1)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -834,11 +874,11 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "Merge"){
+		}else if (command == "MERGE"){
 
 			if (nbArg < 2)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t indexFile_src = std::stoi(arguments.at(0));
@@ -864,7 +904,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "EMD_Load"){
+		}else if (command == "EMD_LOAD"){
 
 
 			for (size_t i = 0; i < nbArg; i++)
@@ -892,7 +932,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "EMD_Save"){
+		}else if (command == "EMD_SAVE"){
 
 			if (arguments.at(0) == "")
 			{
@@ -933,7 +973,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "EMD_GetEmdFileList"){
+		}else if (command == "EMD_GETEMDFILELIST"){
 
 			size_t nbFile = listEmdFile.size();
 			for (size_t i = 0; i < nbFile; i++)
@@ -943,7 +983,7 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "EMD_GetBoneList"){
+		}else if (command == "EMD_GETBONELIST"){
 
 			
 			if (arguments.at(0) == "")
@@ -981,11 +1021,11 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "EMD_Rename"){
+		}else if (command == "EMD_RENAME"){
 
 			if (nbArg < 3)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t index = (arguments.size()>0) ? std::stoi(arguments.at(0)) : (size_t)-1;
