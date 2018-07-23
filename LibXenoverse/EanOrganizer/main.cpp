@@ -54,10 +54,10 @@ int main(int argc, char** argv)
 
 	LibXenoverse::initializeDebuggingLog();
 
-	printf("Welcome to Ean organizer v0.8.5kx\n\n");
+	printf("Welcome to Ean organizer v0.9.1kx\n\n");
 
 
-	string help = "	Commands: \n\
+	string help = "Commands:\n\
 	<Required Parameter> [Optional Parameter]\n\n\
 	'Help [Command]' e.g. 'Help Load' for help with Load command\n\
 	'Load <path\\filenameEanFile> <file2.ean> ...'\n\
@@ -93,38 +93,38 @@ int main(int argc, char** argv)
 	note: <indexBone> can be substituted with the bone name, e.g. AddBoneFilter 0 b_R_Arm1\n";
 
 	std::map<string, string> helptext;
-	helptext["HELP"] = "Help:\nList all commands\n\n";
-	helptext["LOAD"] = "Load:\nLoad an EAN file\n\n";
-	helptext["SAVE"] = "Save:\nSave your modified EAN file\n\n";
-	helptext["GETEANFILELIST"] = "Load:\nGet list of loaded EAN files\n\n";
-	helptext["GETANIMLIST"] = "Load:\nGet list of animations within a specified EAN file\n\n";
-	helptext["GETBONELIST"] = "Load:\nGet list of bones within a specified EAN file\n\n";	
-	helptext["RENAME"] = "Load:\nRename a specified animation\n\n";
-	helptext["COPY"] = "Copy:\nCopy on the specified animation to clipboard\n\n";
-	helptext["PASTE"] = "Paste:\nPaste clipboard animation OVER destination animation\n\n";
-	helptext["APPEND"] = "Append:\nAdd the animation to an EAN.\n	Note: A new keyframe will be added to the end, do not delete\n\n";
-	helptext["CUT"] = "Cut:\nCut the animation to keep the range. Use -1 to for default value\n\n";
-	helptext["FIXEDPOSITIONCOMPONENT"] = "FixedPositionComponent:\n	Use the value on the first keyframe to replace all other keyframes, for all the component of a animation of a bone\n\n";
-	helptext["MOVEPOSITIONCOMPONENT"] = "MovePositionComponent:\n	Move the animation for a component of position of the bone on an animation\n\n";
-	helptext["ERASE"] = "Erase:\nErase only Animation in AnimIndex\n	If you use [AnimIndex_rangeEnd], it will erase the entire range between the two animIndex\n\n";
-	helptext["INSERT"] = "Insert:\nInsert an animation before index of Animation specified\n\n";
-	helptext["ADDBONEFILTER"] = "AddBoneFilter:\nBy using the filter, when you paste with bone filter, only the specified bones will be affected\n	If you justto copy the animation from the tail, only specify the tail bones	<boneIndex> can be substituted for bone names e.g. b_R_Arm1\n\n";
-	helptext["GETBONEFILTER"] = "Load:\nGet bones currently in the bone filter\n\n";
-	helptext["ADDALLBONEINFILTERFOR"] = "AddAllBoneInFilterFor:\nQuick way to add all bones to filter except for the bones specified\n\n";
-	helptext["ADDBONEFILTERPRESET"] = "AddBoneFilterPreset:\nAdd a preset list of bones to the bone filter:\n\n	'torso'\n	'head'\n	'arms'\n	'arm_left'\n	'arm_right'\n	'hands'\n	'hand_left'\n	'hand_right'\n	'legs'\n	'leg_left'\n	'leg_right'\n	'tail'\n	'wings'\n	'spines'\n	'sword'\n	'cane'\n	'spear'\n	'accessories'\n\n";
-	helptext["RESETBONEFILTER"] = "ResetBoneFilter:\nClear the bonefilter\n\n";
-	helptext["PASTEWITHBONEFILTER"] = "PasteWithBoneFilter:\nPaste copied animation with bone filter'\n\n";
-	helptext["COPYPASTERANGE"] = "CopyPasteRange:\nCopy and paste a range of animations\n	[indexAnimation_DestionationStart] is a index for start the paste on destination. (that will add new aniamtion if up to number of animations of destination)\n\n";
-	helptext["COPYPASTERANGE_WITHBONEFILTER"] = "CopyPasteRange_WithBoneFilter:\nCopy and paste a range of animations with the bone filter\n	[indexAnimation_DestionationStart] will specify a start the paste on destination. (that will add new aniamtion if up to number of animations of destination)\n\n";
-	helptext["GETDURATION"] = "GetDuration:\nGet the duration of a animation\n	You can specify a bone with [indexBone] argument\n\n";
-	helptext["SETDURATION"] = "SetDuration:\nSet the duration of a animation\n	You can specify a bone with [indexBone] argument\n\n";
-	helptext["SETDURATIONINFRAMES"] = "SetDurationInFrames:\nSet the duration of a animation in frames\n	You can specify a bone with [indexBone] argument\n\n";
-	helptext["LOOPANIMATION"] = "LoopAnimation:\nLoop the animation to increase the duration\n	You can specify a bone with [indexBone] argument\n\n";
-	helptext["ADDBONEOFFSETSCALEONANIMATIONPOSITION"] = "AddBoneOffsetScaleOnAnimationPosition:\nAdd an offset to a bone and/or multiply by scale.\n	Note: Use -1 for <AnimIndex> to apply to all animations.\n	Neutral Values: offsetToAdd: 0.0, scaleToMultiply: 1.0\n\n";
-	helptext["MATCHANIMATIONDURATION"] = "MatchAnimationDuration:\nThe SECOND EAN will have the same duration of the animation from the source EAN\n\n";
-	helptext["QUIT"] = "Quit:\nExit the program\n\n";
+	helptext["HELP"] = "Help [Command]\nList all commands\n\n";
+	helptext["LOAD"] = "Load <path\\filenameEanFile> <file2.ean> ...\nLoad an EAN file\n\n";
+	helptext["SAVE"] = "Save <indexEan> <path\\filename>\nSave your modified EAN file\n\n";
+	helptext["GETEANFILELIST"] = "GetEanFileList\nGet list of loaded EAN files\n\n";
+	helptext["GETANIMLIST"] = "GetAnimList <Eanindex>\nGet list of animations within a specified EAN file\n\n";
+	helptext["GETBONELIST"] = "GetBoneList <indexEan>\nGet list of bones within a specified EAN file\n\n";	
+	helptext["RENAME"] = "Rename <indexEan> <indexAnimation> <newName>\nRename a specified animation\n\n";
+	helptext["COPY"] = "Copy\nCopy on the specified animation to clipboard\n\n";
+	helptext["PASTE"] = "Paste <indexEan> <indexAnimation>\nPaste clipboard animation OVER destination animation\n\n";
+	helptext["APPEND"] = "Append <EanIndex> <indexAnimation>\nAdd the animation to an EAN.\n	Note: A new keyframe will be added to the end, do not delete\n\n";
+	helptext["CUT"] = "Cut <EanIndex> <indexAnimation> <indexKeyFrame_Start or -1> <indexKeyFrame_End or -1>\nCut the animation to keep the range. Use -1 to for default value\n\n";
+	helptext["FIXEDPOSITIONCOMPONENT"] = "FixedPositionComponent <EanIndex> <indexAnimation> <indexBone> <component X Y or Z>\n	Use the value on the first keyframe to replace all other keyframes, for all the component of a animation of a bone\n\n";
+	helptext["MOVEPOSITIONCOMPONENT"] = "MovePositionComponent <EanIndex> <indexAnimation> <indexBone> <component X Y or Z> X.xxx\n	Move the animation for a component of position of the bone on an animation\n\n";
+	helptext["ERASE"] = "Erase <EanIndex> <AnimIndex> [AnimIndex_rangeEnd]\nErase only Animation in AnimIndex\n	If you use [AnimIndex_rangeEnd], it will erase the entire range between the two animIndex\n\n";
+	helptext["INSERT"] = "Insert <indexEan> <indexAnimation>\nInsert an animation before index of Animation specified\n\n";
+	helptext["ADDBONEFILTER"] = "AddBoneFilter <indexEan> <indexBone1> [indexBone2] [indexBone3] ...\nBy using the filter, when you paste with bone filter, only the specified bones will be affected\n	If you justto copy the animation from the tail, only specify the tail bones	<boneIndex> can be substituted for bone names e.g. b_R_Arm1\n\n";
+	helptext["GETBONEFILTER"] = "GetBoneFilter\nGet bones currently in the bone filter\n\n";
+	helptext["ADDALLBONEINFILTERFOR"] = "AddAllBoneInFilterFor <indexEan> <indexBone1_notIn> [indexBone2_notIn] [indexBone3_notIn] ...\nQuick way to add all bones to filter except for the bones specified\n\n";
+	helptext["ADDBONEFILTERPRESET"] = "AddBoneFilterPreset <indexEan> <presetName>\nAdd a preset list of bones to the bone filter:\n\n	'torso'\n	'head'\n	'arms'\n	'arm_left'\n	'arm_right'\n	'hands'\n	'hand_left'\n	'hand_right'\n	'legs'\n	'leg_left'\n	'leg_right'\n	'tail'\n	'wings'\n	'spines'\n	'sword'\n	'cane'\n	'spear'\n	'accessories'\n\n";
+	helptext["RESETBONEFILTER"] = "ResetBoneFilter\nClear the bonefilter\n\n";
+	helptext["PASTEWITHBONEFILTER"] = "PasteWithBoneFilter <indexEan> <indexAnimation>\nPaste copied animation with bone filter'\n\n";
+	helptext["COPYPASTERANGE"] = "CopyPasteRange <indexEan_Src> <indexEan_Dest> <indexAnimation_Start> <indexAnimation_End> [indexAnimation_DestionationStart]\nCopy and paste a range of animations\n	[indexAnimation_DestionationStart] is a index for start the paste on destination. (that will add new aniamtion if up to number of animations of destination)\n\n";
+	helptext["COPYPASTERANGE_WITHBONEFILTER"] = "CopyPasteRange_WithBoneFilter <indexEan_Src> <indexEan_Dest> <indexAnimation_Start> <indexAnimation_End> [indexAnimation_DestionationStart]\nCopy and paste a range of animations with the bone filter\n	[indexAnimation_DestionationStart] will specify a start the paste on destination. (that will add new aniamtion if up to number of animations of destination)\n\n";
+	helptext["GETDURATION"] = "GetDuration <indexEan> <AnimIndex> [indexBone] X.xxx\nGet the duration of a animation\n	You can specify a bone with [indexBone] argument\n\n";
+	helptext["SETDURATION"] = "SetDuration <indexEan> <AnimIndex> [indexBone]\nSet the duration of a animation\n	You can specify a bone with [indexBone] argument\n\n";
+	helptext["SETDURATIONINFRAMES"] = "SetDurationInFrames <indexEan> <AnimIndex> [indexBone] X\nSet the duration of a animation in frames\n	You can specify a bone with [indexBone] argument\n\n";
+	helptext["LOOPANIMATION"] = "LoopAnimation <indexEan> <AnimIndex> <indexBone> X\nLoop the animation to increase the duration\n	You can specify a bone with [indexBone] argument\n\n";
+	helptext["ADDBONEOFFSETSCALEONANIMATIONPOSITION"] = "AddBoneOffsetScaleOnAnimationPosition <indexEan> <AnimIndex> <indexBone> <offsetToAdd_X> <offsetToAdd_Y> <offsetToAdd_Z> <scaleToMultiply_X> <scaleToMultiply_Y> <scaleToMultiply_Z>\nAdd an offset to a bone and/or multiply by scale.\n	Note: Use -1 for <AnimIndex> to apply to all animations.\n	Neutral Values: offsetToAdd: 0.0, scaleToMultiply: 1.0\n\n";
+	helptext["MATCHANIMATIONDURATION"] = "MatchAnimationDuration <indexEAN_src> <indexEAN_toMatch> <indexAnimation_Start> <indexAnimation_End>\nThe SECOND EAN will have the same duration of the animation from the source EAN\n\n";
+	helptext["QUIT"] = "Quit\nExit the program\n\n";
 
-	printf((string("You could load many Ean File, get the animation list, copy an animation from a file to another with index. KEEP ORDER of animations if you want to use modified ean in game (need configurator).\n\"path with spaces\" is now allowed.\n") + help +"\n").c_str());
+	printf((string("You can load several EAN Files, list their animations, copy an animation from one EAN to another. KEEP ORDER of animations if you want to use modified ean in game (need configurator).\n\"path with spaces\" is now allowed!\n\n") + help +"\n").c_str());
 
 
 	
@@ -144,7 +144,7 @@ int main(int argc, char** argv)
 	{
 		if (!automaticLine)								//it's a one time automatic command
 		{
-			printf("So, what do you want ?\n");
+			printf("So, what do you want to do next?\n");
 			line = readLine();
 		}
 		automaticLine = false;
@@ -227,7 +227,7 @@ int main(int argc, char** argv)
 				string commandKey = arguments.at(0);
                 std::transform(commandKey.begin(), commandKey.end(), commandKey.begin(), ::toupper);
 				if (helptext.count(commandKey) == 0){
-					printf("\n\nCommand doesn't exist.  Type Help for the full list of commands");
+					printf("\n\nCommand doesn't exist. Use Help for the full list of commands\n");
 					continue;
 				}
 				printf("\n\n%s", helptext.find(commandKey)->second);
@@ -280,7 +280,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 2)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t index = std::stoi(arguments.at(0));
@@ -312,7 +312,7 @@ int main(int argc, char** argv)
 
 			if (nbArg == 0)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t index = std::stoi(arguments.at(0));
@@ -336,7 +336,7 @@ int main(int argc, char** argv)
 
 			if (nbArg == 0)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t index = std::stoi(arguments.at(0));
@@ -382,7 +382,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 4)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t indexFile_src   = std::stoi(arguments.at(0));
@@ -474,7 +474,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 4)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t indexFile_src = std::stoi(arguments.at(0));
@@ -553,7 +553,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 2)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			
@@ -580,7 +580,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 2)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -635,7 +635,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 2)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}			
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -678,7 +678,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 2)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -719,7 +719,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 4)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -753,7 +753,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 4)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -837,7 +837,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 5)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -930,7 +930,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 1)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -993,7 +993,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 1)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -1075,7 +1075,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 2)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			string indexFile_str = arguments.at(0);
@@ -1149,7 +1149,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 3)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -1174,7 +1174,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 2)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -1212,7 +1212,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 2)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -1251,7 +1251,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 9)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -1330,7 +1330,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 2)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -1397,7 +1397,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 2)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -1555,7 +1555,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 2)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -1690,7 +1690,7 @@ int main(int argc, char** argv)
 			
 			if (nbArg < 4)
 			{
-				printf("You miss arguments. try 'Help' command\n");
+				printf("Missing arguments. try 'Help' command\n");
 				continue;
 			}
 			size_t indexFile_src = std::stoi(arguments.at(0));
