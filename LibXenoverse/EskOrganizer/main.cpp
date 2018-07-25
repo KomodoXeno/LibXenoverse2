@@ -52,7 +52,7 @@ int main(int argc, char** argv)
 
 	LibXenoverse::initializeDebuggingLog();
 
-	printf("Welcome to ESK Organizer v0.6.2kx\n\n");
+	printf("Welcome to ESK Organizer v0.6.3kx\n\n");
 
 
 	string help = "Commands:\n\
