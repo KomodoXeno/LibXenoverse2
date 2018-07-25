@@ -83,10 +83,10 @@ int main(int argc, char** argv)
 	'EMD_GetEMDFileList'\n\
 	'EMD_GetBoneList <indexEMD>'\n\
 	'EMD_Rename <indexEMD> <oldBoneName> <newBoneName>'\n\
-	//'GetBoneRotation <indexESK> <indexBone> <absolute>'\n\
-	//'SetBoneRotation <indexESK> <indexBone> <RotY> <RotZ> <RotX> <absolute>'\n\	
 	'Quit'\n";
-
+	
+	//'GetBoneRotation <indexESK> <indexBone> <absolute>'\n\
+	//'SetBoneRotation <indexESK> <indexBone> <RotY> <RotZ> <RotX> <absolute>'\n\
 
 	std::map<string, string> helptext;
 	helptext["HELP"] = "Help [Command]\nList all commands\n\n";
