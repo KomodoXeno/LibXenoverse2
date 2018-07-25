@@ -54,81 +54,82 @@ int main(int argc, char** argv)
 
 	LibXenoverse::initializeDebuggingLog();
 
-	printf("Welcome to Ean organizer v0.9.1kx\n\n");
+	printf("Welcome to EAN Organizer v0.9.2kx\n\n");
 
 
 	string help = "Commands:\n\
 	<Required Parameter> [Optional Parameter]\n\n\
 	'Help [Command]' e.g. 'Help Load' for help with Load command\n\
-	'Load <path\\filenameEanFile> <file2.ean> ...'\n\
-	'Save <indexEan> <path\\filename>'\n\
-	'GetEanFileList'\n\
-	'GetAnimList <Eanindex>'\n\
-	'Copy <indexEan> <indexAnimation>'\n\
-	'Paste <indexEan> <indexAnimation>'\n\
-	'Append <EanIndex> <indexAnimation>'\n\
-	'Cut <EanIndex> <indexAnimation> <indexKeyFrame_Start or -1> <indexKeyFrame_End or -1>'\n\
-	'FixedPositionComponent <EanIndex> <indexAnimation> <indexBone> <component 'X' 'Y' or 'Z'>'\n\
-	'MovePositionComponent <EanIndex> <indexAnimation> <indexBone> <component 'X' 'Y' or 'Z'> X.xxx'\n\
-	'Rename <indexEan> <indexAnimation> <newName>'\n\
-	'Erase <EanIndex> <AnimIndex> [AnimIndex_rangeEnd]'\n\
-	'Insert <indexEan> <indexAnimation>'\n\
-	'GetBoneList <indexEan>'\n\
-	'AddBoneFilter <indexEan> <indexBone1> [indexBone2] [indexBone3] ...'\n\
-	'AddAllBoneInFilterFor <indexEan> <indexBone1_notIn> [indexBone2_notIn] [indexBone3_notIn] ...'\n\
-	'AddBoneFilterPreset <indexEan> <presetName>'\n\
+	'Load <path\\filenameEANFile> <file2.ean> ...'\n\
+	'Save <indexEAN> <path\\filename>'\n\
+	'GetEANFileList'\n\
+	'GetAnimList <indexEAN>'\n\
+	'Copy <indexEAN> <indexAnim>'\n\
+	'Paste <indexEAN> <indexAnim>'\n\
+	'Append <indexEAN> <indexAnim>'\n\
+	'Cut <indexEAN> <indexAnim> <indexKeyFrame_Start or -1> <indexKeyFrame_End or -1>'\n\
+	'FixedPositionComponent <indexEAN> <indexAnim> <indexBone> <component 'X' 'Y' or 'Z'>'\n\
+	'MovePositionComponent <indexEAN> <indexAnim> <indexBone> <component 'X' 'Y' or 'Z'> X.xxx'\n\
+	'Rename <indexEAN> <indexAnim> <newName>'\n\
+	'Erase <indexEAN> <indexAnim> [animEnd]'\n\
+	'Insert <indexEAN> <indexAnim>'\n\
+	'GetBoneList <indexEAN>'\n\
+	'AddBoneFilter <indexEAN> <indexBone1> [indexBone2] [indexBone3] ...'\n\
+	'AddAllBoneInFilterFor <indexEAN> <indexBone1_notIn> [indexBone2_notIn] [indexBone3_notIn] ...'\n\
+	'AddBoneFilterPreset <indexEAN> <presetName>'\n\
 	'GetBoneFilter'\n\
 	'ResetBoneFilter'\n\
-	'PasteWithBoneFilter <indexEan> <indexAnimation>'\n\
-	'CopyPasteRange <indexEan_Src> <indexEan_Dest> <indexAnimation_Start> <indexAnimation_End> [indexAnimation_DestionationStart]'\n\
-	'CopyPasteRange_WithBoneFilter <indexEan_Src> <indexEan_Dest> <indexAnimation_Start> <indexAnimation_End> [indexAnimation_DestionationStart]'\n\
-	'GetDuration <indexEan> <AnimIndex> [indexBone]'\n\
-	'SetDuration <indexEan> <AnimIndex> [indexBone] X.xxx'\n\
-	'SetDurationInFrames <indexEan> <AnimIndex> [indexBone] X'\n\
-	'LoopAnimation <indexEan> <AnimIndex> <indexBone> X'\n\
-	'AddBoneOffsetScaleOnAnimationPosition <indexEan> <AnimIndex> <indexBone> <offsetToAdd_X> <offsetToAdd_Y> <offsetToAdd_Z> <scaleToMultiply_X> <scaleToMultiply_Y> <scaleToMultiply_Z>'\n\
-	'MatchAnimationDuration <indexEAN_src> <indexEAN_toMatch> <indexAnimation_Start> <indexAnimation_End>'\n\
+	'PasteWithBoneFilter <indexEAN> <indexAnim>'\n\
+	'CopyPasteRange <EAN_Src> <EAN_Dest> <animStart> <animEnd> [DestinationStart]'\n\
+	'CopyPasteRange_WithBoneFilter <EAN_Src> <EAN_Dest> <animStart> <animEnd> [DestinationStart]'\n\
+	'GetDuration <indexEAN> <indexAnim> [indexBone]'\n\
+	'SetDuration <indexEAN> <indexAnim> [indexBone] X.xxx'\n\
+	'SetDurationInFrames <indexEAN> <indexAnim> [indexBone] X'\n\
+	'LoopAnimation <indexEAN> <indexAnim> <indexBone> X'\n\
+	'MatchAnimationDuration <EAN_src> <EAN_toMatch> <animStart> <animEnd>'\n\
+	'AddBoneOffsetScaleOnAnimationPosition (see 'Help AddBoneOffsetScaleOnAnimationPosition' for usage)\n\
 	'Quit'\n\
 	\n\
 	note: <indexBone> can be substituted with the bone name, e.g. AddBoneFilter 0 b_R_Arm1\n";
 
 	std::map<string, string> helptext;
 	helptext["HELP"] = "Help [Command]\nList all commands\n\n";
-	helptext["LOAD"] = "Load <path\\filenameEanFile> <file2.ean> ...\nLoad an EAN file\n\n";
-	helptext["SAVE"] = "Save <indexEan> <path\\filename>\nSave your modified EAN file\n\n";
-	helptext["GETEANFILELIST"] = "GetEanFileList\nGet list of loaded EAN files\n\n";
-	helptext["GETANIMLIST"] = "GetAnimList <Eanindex>\nGet list of animations within a specified EAN file\n\n";
-	helptext["GETBONELIST"] = "GetBoneList <indexEan>\nGet list of bones within a specified EAN file\n\n";	
-	helptext["RENAME"] = "Rename <indexEan> <indexAnimation> <newName>\nRename a specified animation\n\n";
+	helptext["LOAD"] = "Load <path\\filenameEANFile> <file2.ean> ...\nLoad an EAN file\n\n";
+	helptext["SAVE"] = "Save <indexEAN> <path\\filename>\nSave your modified EAN file\n\n";
+	helptext["GETEANFILELIST"] = "GetEANFileList\nGet list of loaded EAN files\n\n";
+	helptext["GETANIMLIST"] = "GetAnimList <indexEAN>\nGet list of animations within a specified EAN file\n\n";
+	helptext["GETBONELIST"] = "GetBoneList <indexEAN>\nGet list of bones within a specified EAN file\n\n";	
+	helptext["RENAME"] = "Rename <indexEAN> <indexAnim> <newName>\nRename a specified animation\n\n";
 	helptext["COPY"] = "Copy\nCopy on the specified animation to clipboard\n\n";
-	helptext["PASTE"] = "Paste <indexEan> <indexAnimation>\nPaste clipboard animation OVER destination animation\n\n";
-	helptext["APPEND"] = "Append <EanIndex> <indexAnimation>\nAdd the animation to an EAN.\n	Note: A new keyframe will be added to the end, do not delete\n\n";
-	helptext["CUT"] = "Cut <EanIndex> <indexAnimation> <indexKeyFrame_Start or -1> <indexKeyFrame_End or -1>\nCut the animation to keep the range. Use -1 to for default value\n\n";
-	helptext["FIXEDPOSITIONCOMPONENT"] = "FixedPositionComponent <EanIndex> <indexAnimation> <indexBone> <component X Y or Z>\n	Use the value on the first keyframe to replace all other keyframes, for all the component of a animation of a bone\n\n";
-	helptext["MOVEPOSITIONCOMPONENT"] = "MovePositionComponent <EanIndex> <indexAnimation> <indexBone> <component X Y or Z> X.xxx\n	Move the animation for a component of position of the bone on an animation\n\n";
-	helptext["ERASE"] = "Erase <EanIndex> <AnimIndex> [AnimIndex_rangeEnd]\nErase only Animation in AnimIndex\n	If you use [AnimIndex_rangeEnd], it will erase the entire range between the two animIndex\n\n";
-	helptext["INSERT"] = "Insert <indexEan> <indexAnimation>\nInsert an animation before index of Animation specified\n\n";
-	helptext["ADDBONEFILTER"] = "AddBoneFilter <indexEan> <indexBone1> [indexBone2] [indexBone3] ...\nBy using the filter, when you paste with bone filter, only the specified bones will be affected\n	If you justto copy the animation from the tail, only specify the tail bones	<boneIndex> can be substituted for bone names e.g. b_R_Arm1\n\n";
+	helptext["PASTE"] = "Paste <indexEAN> <indexAnim>\nPaste clipboard animation OVER destination animation\n\n";
+	helptext["APPEND"] = "Append <indexEAN> <indexAnim>\nAdd the animation to an EAN.\n	Note: A new keyframe will be added to the end, do not delete\n\n";
+	helptext["CUT"] = "Cut <indexEAN> <indexAnim> <indexKeyFrame_Start or -1> <indexKeyFrame_End or -1>\nCut the animation to keep the range. Use -1 to for default value\n\n";
+	helptext["FIXEDPOSITIONCOMPONENT"] = "FixedPositionComponent <indexEAN> <indexAnim> <indexBone> <component X Y or Z>\n	Use the value on the first keyframe to replace all other keyframes, for all the component of a animation of a bone\n\n";
+	helptext["MOVEPOSITIONCOMPONENT"] = "MovePositionComponent <indexEAN> <indexAnim> <indexBone> <component X Y or Z> X.xxx\n	Move the animation for a component of position of the bone on an animation\n\n";
+	helptext["ERASE"] = "Erase <indexEAN> <indexAnim> [indexAnim_rangeEnd]\nErase only Animation in indexAnim\n	If you use [indexAnim_rangeEnd], it will erase the entire range between the two indexAnim\n\n";
+	helptext["INSERT"] = "Insert <indexEAN> <indexAnim>\nInsert an animation before index of Animation specified\n\n";
+	helptext["ADDBONEFILTER"] = "AddBoneFilter <indexEAN> <indexBone1> [indexBone2] [indexBone3] ...\nBy using the filter, when you paste with bone filter, only the specified bones will be affected\n	If you justto copy the animation from the tail, only specify the tail bones	<boneIndex> can be substituted for bone names e.g. b_R_Arm1\n\n";
 	helptext["GETBONEFILTER"] = "GetBoneFilter\nGet bones currently in the bone filter\n\n";
-	helptext["ADDALLBONEINFILTERFOR"] = "AddAllBoneInFilterFor <indexEan> <indexBone1_notIn> [indexBone2_notIn] [indexBone3_notIn] ...\nQuick way to add all bones to filter except for the bones specified\n\n";
-	helptext["ADDBONEFILTERPRESET"] = "AddBoneFilterPreset <indexEan> <presetName>\nAdd a preset list of bones to the bone filter:\n\n	'torso'\n	'head'\n	'arms'\n	'arm_left'\n	'arm_right'\n	'hands'\n	'hand_left'\n	'hand_right'\n	'legs'\n	'leg_left'\n	'leg_right'\n	'tail'\n	'wings'\n	'spines'\n	'sword'\n	'cane'\n	'spear'\n	'accessories'\n\n";
+	helptext["ADDALLBONEINFILTERFOR"] = "AddAllBoneInFilterFor <indexEAN> <indexBone1_notIn> [indexBone2_notIn] [indexBone3_notIn] ...\nQuick way to add all bones to filter except for the bones specified\n\n";
+	helptext["ADDBONEFILTERPRESET"] = "AddBoneFilterPreset <indexEAN> <presetName>\nAdd a preset list of bones to the bone filter:\n\n	'torso'\n	'head'\n	'arms'\n	'arm_left'\n	'arm_right'\n	'hands'\n	'hand_left'\n	'hand_right'\n	'legs'\n	'leg_left'\n	'leg_right'\n	'tail'\n	'wings'\n	'spines'\n	'sword'\n	'cane'\n	'spear'\n	'accessories'\n\n";
 	helptext["RESETBONEFILTER"] = "ResetBoneFilter\nClear the bonefilter\n\n";
-	helptext["PASTEWITHBONEFILTER"] = "PasteWithBoneFilter <indexEan> <indexAnimation>\nPaste copied animation with bone filter'\n\n";
-	helptext["COPYPASTERANGE"] = "CopyPasteRange <indexEan_Src> <indexEan_Dest> <indexAnimation_Start> <indexAnimation_End> [indexAnimation_DestionationStart]\nCopy and paste a range of animations\n	[indexAnimation_DestionationStart] is a index for start the paste on destination. (that will add new aniamtion if up to number of animations of destination)\n\n";
-	helptext["COPYPASTERANGE_WITHBONEFILTER"] = "CopyPasteRange_WithBoneFilter <indexEan_Src> <indexEan_Dest> <indexAnimation_Start> <indexAnimation_End> [indexAnimation_DestionationStart]\nCopy and paste a range of animations with the bone filter\n	[indexAnimation_DestionationStart] will specify a start the paste on destination. (that will add new aniamtion if up to number of animations of destination)\n\n";
-	helptext["GETDURATION"] = "GetDuration <indexEan> <AnimIndex> [indexBone] X.xxx\nGet the duration of a animation\n	You can specify a bone with [indexBone] argument\n\n";
-	helptext["SETDURATION"] = "SetDuration <indexEan> <AnimIndex> [indexBone]\nSet the duration of a animation\n	You can specify a bone with [indexBone] argument\n\n";
-	helptext["SETDURATIONINFRAMES"] = "SetDurationInFrames <indexEan> <AnimIndex> [indexBone] X\nSet the duration of a animation in frames\n	You can specify a bone with [indexBone] argument\n\n";
-	helptext["LOOPANIMATION"] = "LoopAnimation <indexEan> <AnimIndex> <indexBone> X\nLoop the animation to increase the duration\n	You can specify a bone with [indexBone] argument\n\n";
-	helptext["ADDBONEOFFSETSCALEONANIMATIONPOSITION"] = "AddBoneOffsetScaleOnAnimationPosition <indexEan> <AnimIndex> <indexBone> <offsetToAdd_X> <offsetToAdd_Y> <offsetToAdd_Z> <scaleToMultiply_X> <scaleToMultiply_Y> <scaleToMultiply_Z>\nAdd an offset to a bone and/or multiply by scale.\n	Note: Use -1 for <AnimIndex> to apply to all animations.\n	Neutral Values: offsetToAdd: 0.0, scaleToMultiply: 1.0\n\n";
-	helptext["MATCHANIMATIONDURATION"] = "MatchAnimationDuration <indexEAN_src> <indexEAN_toMatch> <indexAnimation_Start> <indexAnimation_End>\nThe SECOND EAN will have the same duration of the animation from the source EAN\n\n";
+	helptext["PASTEWITHBONEFILTER"] = "PasteWithBoneFilter <indexEAN> <indexAnim>\nPaste copied animation with bone filter'\n\n";
+	helptext["COPYPASTERANGE"] = "CopyPasteRange <indexEAN_Src> <indexEAN_Dest> <indexAnim_Start> <indexAnim_End> [indexAnim_DestinationStart]\nCopy and paste a range of animations\n	[indexAnim_DestinationStart] is a index for start the paste on destination. (that will add new aniamtion if up to number of animations of destination)\n\n";
+	helptext["COPYPASTERANGE_WITHBONEFILTER"] = "CopyPasteRange_WithBoneFilter <indexEAN_Src> <indexEAN_Dest> <indexAnim_Start> <indexAnim_End> [indexAnim_DestinationStart]\nCopy and paste a range of animations with the bone filter\n	[indexAnim_DestinationStart] will specify a start the paste on destination. (that will add new aniamtion if up to number of animations of destination)\n\n";
+	helptext["GETDURATION"] = "GetDuration <indexEAN> <indexAnim> [indexBone] X.xxx\nGet the duration of a animation\n	You can specify a bone with [indexBone] argument\n\n";
+	helptext["SETDURATION"] = "SetDuration <indexEAN> <indexAnim> [indexBone]\nSet the duration of a animation\n	You can specify a bone with [indexBone] argument\n\n";
+	helptext["SETDURATIONINFRAMES"] = "SetDurationInFrames <indexEAN> <indexAnim> [indexBone] X\nSet the duration of a animation in frames\n	You can specify a bone with [indexBone] argument\n\n";
+	helptext["LOOPANIMATION"] = "LoopAnimation <indexEAN> <indexAnim> <indexBone> X\nLoop the animation to increase the duration\n	You can specify a bone with [indexBone] argument\n\n";
+	helptext["ADDBONEOFFSETSCALEONANIMATIONPOSITION"] = "AddBoneOffsetScaleOnAnimationPosition <indexEAN> <indexAnim> <indexBone> <offsetToAdd_X> <offsetToAdd_Y> <offsetToAdd_Z> <scaleToMultiply_X> <scaleToMultiply_Y> <scaleToMultiply_Z>\nAdd an offset to a bone and/or multiply by scale.\n	Note: Use -1 for <indexAnim> to apply to all animations.\n	Neutral Values: offsetToAdd: 0.0, scaleToMultiply: 1.0\n\n";
+	helptext["MATCHANIMATIONDURATION"] = "MatchAnimationDuration <indexEAN_src> <indexEAN_toMatch> <indexAnim_Start> <indexAnim_End>\nThe SECOND EAN will have the same duration of the animation from the source EAN\n\n";
+	//helptext["MATCHCHARAID"] = "MatchCharaID <indexEAN> <XXX>\nSet the Character ID <XXX> to quickly rename all animations\n\n"; 
 	helptext["QUIT"] = "Quit\nExit the program\n\n";
 
-	printf((string("You can load several EAN Files, list their animations, copy an animation from one EAN to another. KEEP ORDER of animations if you want to use modified ean in game (need configurator).\n\"path with spaces\" is now allowed!\n\n") + help +"\n").c_str());
+	printf((string("You can load several EAN Files, list their animations, copy an animation from one EAN to another. KEEP ORDER of animations if you want to use modified ean in game (need configurator).\n\n") + help +"\n").c_str());
 
 
 	
-	vector<LibXenoverse::EAN*> listEanFile;
+	vector<LibXenoverse::EAN*> listEANFile;
 	vector<string> listFileName;
 	LibXenoverse::EANAnimation *mSavedAnimation = 0;
 	
@@ -230,9 +231,9 @@ int main(int argc, char** argv)
 					printf("\n\nCommand doesn't exist. Use Help for the full list of commands\n");
 					continue;
 				}
-				printf("\n\n%s", helptext.find(commandKey)->second);
+				printf("%s", helptext.find(commandKey)->second);
 			}else{
-				printf("\n\n%s\n",help.c_str());
+				printf("%s\n",help.c_str());
 			}
 
 
@@ -247,27 +248,27 @@ int main(int argc, char** argv)
 				string extension = LibXenoverse::extensionFromFilename(filename, true);
 				if (extension != "ean")
 				{
-					printf("%s is not a ean file. Skipped.\n", filename.c_str());
+					printf("%s is not a EAN file\n", filename.c_str());
 					continue;
 				}
 
 				LibXenoverse::EAN* ean = new LibXenoverse::EAN();
 				if (!ean->load(filename))
 				{
-					printf("faild to load %s. Skipped.\n", filename.c_str());
+					printf("Failed to load %s\n", filename.c_str());
 					delete ean;
 					continue;
 				}
-				printf("Ean file loaded.\n");
+				printf("EAN file loaded\n");
 
-				listEanFile.push_back(ean);
+				listEANFile.push_back(ean);
 				listFileName.push_back(filename);
 				inc++;
 			}
 			
 			if (inc == 0)
 			{
-				printf("Not Enought or right arguments. try 'Help' command\n");
+				printf("Missing arguments. Try 'Help Load'\n");
 				continue;
 			}
 
@@ -280,19 +281,19 @@ int main(int argc, char** argv)
 
 			if (nbArg < 2)
 			{
-				printf("Missing arguments. try 'Help' command\n");
+				printf("Missing arguments. Try 'Help Save'\n");
 				continue;
 			}
 			size_t index = std::stoi(arguments.at(0));
 			string filename = arguments.at(1);
 
-			if (index < listEanFile.size())
+			if (index < listEANFile.size())
 			{
-				listEanFile.at(index)->save(filename);
-				printf("Ean file saved at %s.\n", filename.c_str());
+				listEANFile.at(index)->save(filename);
+				printf("EAN file saved at %s\n", filename.c_str());
 
 			}else{
-				printf("index %i is not in ean file list.\n", index);
+				printf("There is no EAN file at index %i\n", index);
 			}
 
 
@@ -312,20 +313,20 @@ int main(int argc, char** argv)
 
 			if (nbArg == 0)
 			{
-				printf("Missing arguments. try 'Help' command\n");
+				printf("Missing arguments. Try 'Help GetAnimList'\n");
 				continue;
 			}
 			size_t index = std::stoi(arguments.at(0));
 
-			if (index < listEanFile.size())
+			if (index < listEANFile.size())
 			{
-				LibXenoverse::EAN *eanFile = listEanFile.at(index);
+				LibXenoverse::EAN *eanFile = listEANFile.at(index);
 				
 				size_t nbAnim = eanFile->getAnimations().size();
 				for (size_t i = 0; i < nbAnim; i++)
 					printf("%i : %s\n", i, eanFile->getAnimations().at(i).getName().c_str());
 			}else{
-				printf("index %i is not in ean file list.\n", index);
+				printf("There is no EAN file at index %i\n", index);
 			}
 		
 
@@ -336,14 +337,14 @@ int main(int argc, char** argv)
 
 			if (nbArg == 0)
 			{
-				printf("Missing arguments. try 'Help' command\n");
+				printf("Missing arguments. Try 'Help GetBoneList'\n");
 				continue;
 			}
 			size_t index = std::stoi(arguments.at(0));
 
-			if (index < listEanFile.size())
+			if (index < listEANFile.size())
 			{
-				LibXenoverse::EAN *eanFile = listEanFile.at(index);
+				LibXenoverse::EAN *eanFile = listEANFile.at(index);
 
 				if (eanFile->getSkeleton())
 				{
@@ -352,10 +353,10 @@ int main(int argc, char** argv)
 					for (size_t i = 0; i < nbBone; i++)
 						printf("%i : %s\n", i, bones.at(i)->getName().c_str());
 				}else{
-					printf("No skeleton definition in this ean file\n");
+					printf("No skeleton definition in this EAN file\n");
 				}
 			}else{
-				printf("index %i is not in ean file list.\n", index);
+				printf("There is no EAN file at index %i\n", index);
 			}
 
 
@@ -363,18 +364,18 @@ int main(int argc, char** argv)
 		///////////////////////////////////////////////////////////////////////////////////////////////////
 		}else if (command == "GETBONEFILTER"){
 
-			size_t nbEanFileFilter = mListBoneFilters.size();
+			size_t nbEANFileFilter = mListBoneFilters.size();
 
-			for (size_t i = 0; i < nbEanFileFilter; i++)
+			for (size_t i = 0; i < nbEANFileFilter; i++)
 			{
 				size_t nbBone = mListBoneFilters.at(i).size();
 				for (size_t j = 0; j < nbBone; j++)
-					if(listEanFile.at(mListBoneFilters_eanIndex.at(i))->getSkeleton())
-						printf("eanfile : %i  boneIndex : %i boneName %s\n", mListBoneFilters_eanIndex.at(i), mListBoneFilters.at(i).at(j), listEanFile.at(mListBoneFilters_eanIndex.at(i))->getSkeleton()->getBones().at(mListBoneFilters.at(i).at(j))->getName().c_str());
+					if(listEANFile.at(mListBoneFilters_eanIndex.at(i))->getSkeleton())
+						printf("eanfile : %i  boneIndex : %i boneName %s\n", mListBoneFilters_eanIndex.at(i), mListBoneFilters.at(i).at(j), listEANFile.at(mListBoneFilters_eanIndex.at(i))->getSkeleton()->getBones().at(mListBoneFilters.at(i).at(j))->getName().c_str());
 			}
 
-			if (nbEanFileFilter == 0)
-				printf("filter list is empty.\n");
+			if (nbEANFileFilter == 0)
+				printf("Filter is empty\n");
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -382,7 +383,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 4)
 			{
-				printf("Missing arguments. try 'Help' command\n");
+				printf("Missing arguments. Try 'Help CopyPasteRange_WithBoneFilter'\n");
 				continue;
 			}
 			size_t indexFile_src   = std::stoi(arguments.at(0));
@@ -410,39 +411,39 @@ int main(int argc, char** argv)
 
 				printf("****** copy paste for the indexAnim %i ******\n", indexAnim);
 
-				if ((indexFile < listEanFile.size()) && (indexAnim < listEanFile.at(indexFile)->getAnimations().size()))
+				if ((indexFile < listEANFile.size()) && (indexAnim < listEANFile.at(indexFile)->getAnimations().size()))
 				{
-					LibXenoverse::EAN *eanFile = listEanFile.at(indexFile);
+					LibXenoverse::EAN *eanFile = listEANFile.at(indexFile);
 					mSavedAnimation = &(eanFile->getAnimations().at(indexAnim));
-					printf("animation %s is saved for a futur copy\n", mSavedAnimation->getName().c_str());
+					printf("Animation %s has been copied\n", mSavedAnimation->getName().c_str());
 				}
 				else{
-					printf("index %i is not in ean file list or indexAnim %i is not in list animations.\n", indexFile, indexAnim);
+					printf("There is no EAN file at index %i or indexAnim %i is not in the animation list\n", indexFile, indexAnim);
 					continue;
 				}
 
 				size_t indexAnim_dest = indexAnimation_DestionationStart + m;
 				indexFile = indexFile_dest;
-				if (indexFile < listEanFile.size())
+				if (indexFile < listEANFile.size())
 				{
 					if (mSavedAnimation)
 					{
-						LibXenoverse::EAN *eanFile = listEanFile.at(indexFile);
+						LibXenoverse::EAN *eanFile = listEANFile.at(indexFile);
 
 						//make a list of name of bone for filter
 						vector<string> listBoneFilterNames;
-						size_t nbEanFileFilter = mListBoneFilters.size();
-						for (size_t i = 0; i < nbEanFileFilter; i++)
+						size_t nbEANFileFilter = mListBoneFilters.size();
+						for (size_t i = 0; i < nbEANFileFilter; i++)
 						{
 							size_t nbBone = mListBoneFilters.at(i).size();
 							for (size_t j = 0; j < nbBone; j++)
-								listBoneFilterNames.push_back(listEanFile.at(mListBoneFilters_eanIndex.at(i))->getSkeleton()->getBones().at(mListBoneFilters.at(i).at(j))->getName());
+								listBoneFilterNames.push_back(listEANFile.at(mListBoneFilters_eanIndex.at(i))->getSkeleton()->getBones().at(mListBoneFilters.at(i).at(j))->getName());
 						}
 
 						//if miss a animation, go to add one
 						if (indexAnim_dest >= eanFile->getAnimations().size())
 						{
-							printf("indexAnim %i don't existe, animation will push back of the list (take care of index of animation for file working in game).\n", indexAnim_dest);
+							printf("indexAnim %i doesn't exist, animation will be added to the end of the list (you may have trouble in game)\n", indexAnim_dest);
 
 							indexAnim_dest = eanFile->getAnimations().size();
 							eanFile->getAnimations().push_back(LibXenoverse::EANAnimation(mSavedAnimation, listBoneFilterNames, eanFile));
@@ -451,15 +452,15 @@ int main(int argc, char** argv)
 
 							LibXenoverse::EANAnimation &animationToChange = eanFile->getAnimations().at(indexAnim_dest);
 							animationToChange.copy(*mSavedAnimation, listBoneFilterNames);
-							printf("animation is change by copy of another. we keep old name (Use rename if you want).\n");
+							printf("Animation has been replaced. Use Rename if you want to update the name)\n");
 						}
 					}
 					else{
-						printf("error : you must use Copy command first, to select the source.\n");
+						printf("Error: No animation in clipboard, use Copy to select the source\n");
 					}
 				}
 				else{
-					printf("index %i is not in ean file list or indexAnim %i is not in list animations.\n", indexFile, indexAnim_dest);
+					printf("There is no EAN file at index %i or indexAnim %i is not in the animation list\n", indexFile, indexAnim_dest);
 				}
 
 			}
@@ -474,7 +475,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 4)
 			{
-				printf("Missing arguments. try 'Help' command\n");
+				printf("Missing arguments. Try 'Help CopyPasteRange'\n");
 				continue;
 			}
 			size_t indexFile_src = std::stoi(arguments.at(0));
@@ -502,30 +503,30 @@ int main(int argc, char** argv)
 
 				printf("****** copy paste for the indexAnim %i ******\n", indexAnim);
 
-				if ((indexFile < listEanFile.size()) && (indexAnim < listEanFile.at(indexFile)->getAnimations().size()))
+				if ((indexFile < listEANFile.size()) && (indexAnim < listEANFile.at(indexFile)->getAnimations().size()))
 				{
-					LibXenoverse::EAN *eanFile = listEanFile.at(indexFile);
+					LibXenoverse::EAN *eanFile = listEANFile.at(indexFile);
 					mSavedAnimation = &(eanFile->getAnimations().at(indexAnim));
-					printf("animation %s is saved for a futur copy\n", mSavedAnimation->getName().c_str());
+					printf("Animation %s has been copied\n", mSavedAnimation->getName().c_str());
 				}
 				else{
-					printf("index %i is not in ean file list or indexAnim %i is not in list animations.\n", indexFile, indexAnim);
+					printf("There is no EAN file at index %i or indexAnim %i is not in the animation list\n", indexFile, indexAnim);
 					continue;
 				}
 
 				size_t indexAnim_dest = indexAnimation_DestionationStart + m;
 				indexFile = indexFile_dest;
 
-				if (indexFile < listEanFile.size())
+				if (indexFile < listEANFile.size())
 				{
 					if (mSavedAnimation)
 					{
-						LibXenoverse::EAN *eanFile = listEanFile.at(indexFile);
+						LibXenoverse::EAN *eanFile = listEANFile.at(indexFile);
 
 						//if miss a animation, go to add one
 						if (indexAnim_dest >= eanFile->getAnimations().size())
 						{
-							printf("indexAnim %i don't existe, animation will push back of the list (take care of index of animation for file working in game).\n", indexAnim_dest);
+							printf("indexAnim %i doesn't exist, animation will be added to the end of the list (you may have trouble in game)\n", indexAnim_dest);
 
 							indexAnim_dest = eanFile->getAnimations().size();
 							eanFile->getAnimations().push_back(LibXenoverse::EANAnimation(mSavedAnimation, eanFile));
@@ -533,15 +534,15 @@ int main(int argc, char** argv)
 							LibXenoverse::EANAnimation &animationToChange = eanFile->getAnimations().at(indexAnim_dest);
 							animationToChange.copy(*mSavedAnimation);
 
-							printf("animation is change by copy of another. we keep old name (Use rename if you want).\n");
+							printf("Animation has been replaced. Use Rename if you want to update the name)\n");
 						}
 					}
 					else{
-						printf("error : you must use Copy command first, to select the source.\n");
+						printf("Error: No animation in clipboard, use Copy to select the source\n");
 					}
 				}
 				else{
-					printf("index %i is not in ean file list or indexAnim %i is not in list animations.\n", indexFile, indexAnim_dest);
+					printf("There is no EAN file at index %i or indexAnim %i is not in the animation list\n", indexFile, indexAnim_dest);
 				}
 
 			}
@@ -553,21 +554,21 @@ int main(int argc, char** argv)
 
 			if (nbArg < 2)
 			{
-				printf("Missing arguments. try 'Help' command\n");
+				printf("Missing arguments. Try 'Help Copy'\n");
 				continue;
 			}
 			
 			size_t indexFile = std::stoi(arguments.at(0));
 			size_t indexAnim = std::stoi(arguments.at(1));
 
-			if ((indexFile < listEanFile.size()) && (indexAnim < listEanFile.at(indexFile)->getAnimations().size()))
+			if ((indexFile < listEANFile.size()) && (indexAnim < listEANFile.at(indexFile)->getAnimations().size()))
 			{
-				LibXenoverse::EAN *eanFile = listEanFile.at(indexFile);
+				LibXenoverse::EAN *eanFile = listEANFile.at(indexFile);
 				mSavedAnimation = &(eanFile->getAnimations().at(indexAnim));
-				printf("animation %s is saved for a futur copy\n", mSavedAnimation->getName().c_str());
+				printf("Animation %s has been copied\n", mSavedAnimation->getName().c_str());
 			}
 			else{
-				printf("index %i is not in ean file list or indexAnim %i is not in list animations.\n", indexFile, indexAnim);
+				printf("There is no EAN file at index %i or indexAnim %i is not in the animation list\n", indexFile, indexAnim);
 			}
 
 
@@ -580,32 +581,32 @@ int main(int argc, char** argv)
 
 			if (nbArg < 2)
 			{
-				printf("Missing arguments. try 'Help' command\n");
+				printf("Missing arguments. Try 'Help PasteWithBoneFilter'\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
 			size_t indexAnim = std::stoi(arguments.at(1));
 
-			if (indexFile < listEanFile.size()) 
+			if (indexFile < listEANFile.size()) 
 			{
 				if (mSavedAnimation)
 				{
-					LibXenoverse::EAN *eanFile = listEanFile.at(indexFile);
+					LibXenoverse::EAN *eanFile = listEANFile.at(indexFile);
 
 					//make a list of name of bone for filter
 					vector<string> listBoneFilterNames;
-					size_t nbEanFileFilter = mListBoneFilters.size();
-					for (size_t i = 0; i < nbEanFileFilter; i++)
+					size_t nbEANFileFilter = mListBoneFilters.size();
+					for (size_t i = 0; i < nbEANFileFilter; i++)
 					{
 						size_t nbBone = mListBoneFilters.at(i).size();
 						for (size_t j = 0; j < nbBone; j++)
-							listBoneFilterNames.push_back(listEanFile.at(mListBoneFilters_eanIndex.at(i))->getSkeleton()->getBones().at(mListBoneFilters.at(i).at(j) )->getName());
+							listBoneFilterNames.push_back(listEANFile.at(mListBoneFilters_eanIndex.at(i))->getSkeleton()->getBones().at(mListBoneFilters.at(i).at(j) )->getName());
 					}
 
 					//if miss a animation, go to add one
 					if (indexAnim >= eanFile->getAnimations().size())
 					{
-						printf("indexAnim don't existe, animation will push back of the list (take care of index of animation for file working in game).\n");
+						printf("indexAnim %i doesn't exist, animation will be added to the end of the list (you may have trouble in game)\n");
 
 						indexAnim = eanFile->getAnimations().size();
 						eanFile->getAnimations().push_back(LibXenoverse::EANAnimation(mSavedAnimation, listBoneFilterNames, eanFile));
@@ -614,15 +615,15 @@ int main(int argc, char** argv)
 
 						LibXenoverse::EANAnimation &animationToChange = eanFile->getAnimations().at(indexAnim);
 						animationToChange.copy(*mSavedAnimation, listBoneFilterNames);
-						printf("animation is change by copy of another. we keep old name (Use rename if you want).\n");
+						printf("Animation has been replaced. Use Rename if you want to update the name)\n");
 					}
 				}
 				else{
-					printf("error : you must use Copy command first, to select the source.\n");
+					printf("Error: No animation in clipboard, use Copy to select the source\n");
 				}
 			}
 			else{
-				printf("index %i is not in ean file list or indexAnim %i is not in list animations.\n", indexFile, indexAnim);
+				printf("There is no EAN file at index %i or indexAnim %i is not in the animation list\n", indexFile, indexAnim);
 			}
 
 
@@ -635,22 +636,22 @@ int main(int argc, char** argv)
 
 			if (nbArg < 2)
 			{
-				printf("Missing arguments. try 'Help' command\n");
+				printf("Missing arguments. Try 'Help Pase'\n");
 				continue;
 			}			
 			size_t indexFile = std::stoi(arguments.at(0));
 			size_t indexAnim = std::stoi(arguments.at(1));
 
-			if (indexFile < listEanFile.size())
+			if (indexFile < listEANFile.size())
 			{
 				if (mSavedAnimation)
 				{
-					LibXenoverse::EAN *eanFile = listEanFile.at(indexFile);
+					LibXenoverse::EAN *eanFile = listEANFile.at(indexFile);
 
 					//if miss a animation, go to add one
 					if (indexAnim >= eanFile->getAnimations().size())
 					{
-						printf("indexAnim don't existe, animation will push back of the list (take care of index of animation for file working in game).\n");
+						printf("indexAnim %i doesn't exist, animation will be added to the end of the list (you may have trouble in game)\n");
 						
 						indexAnim = eanFile->getAnimations().size();
 						eanFile->getAnimations().push_back(LibXenoverse::EANAnimation(mSavedAnimation, eanFile));
@@ -659,15 +660,15 @@ int main(int argc, char** argv)
 						LibXenoverse::EANAnimation &animationToChange = eanFile->getAnimations().at(indexAnim);
 						animationToChange.copy(*mSavedAnimation);
 
-						printf("animation is change by copy of another. we keep old name (Use rename if you want).\n");
+						printf("Animation has been replaced. Use Rename if you want to update the name)\n");
 					}	
 				}
 				else{
-					printf("error : you must use Copy command first, to select the source.\n");
+					printf("Error: No animation in clipboard, use Copy to select the source\n");
 				}
 			}
 			else{
-				printf("index %i is not in ean file list or indexAnim %i is not in list animations.\n", indexFile, indexAnim);
+				printf("There is no EAN file at index %i or indexAnim %i is not in the animation list\n", indexFile, indexAnim);
 			}
 
 		
@@ -678,22 +679,22 @@ int main(int argc, char** argv)
 
 			if (nbArg < 2)
 			{
-				printf("Missing arguments. try 'Help' command\n");
+				printf("Missing arguments. Try 'Help Append'\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
 			size_t indexAnim = std::stoi(arguments.at(1));
 
-			if (indexFile < listEanFile.size())
+			if (indexFile < listEANFile.size())
 			{
 				if (mSavedAnimation)
 				{
-					LibXenoverse::EAN *eanFile = listEanFile.at(indexFile);
+					LibXenoverse::EAN *eanFile = listEANFile.at(indexFile);
 
 					//if miss a animation, go to add one
 					if (indexAnim >= eanFile->getAnimations().size())
 					{
-						printf("indexAnim don't existe, animation will push back of the list (take care of index of animation for file working in game).\n");
+						printf("indexAnim %i doesn't exist, animation will be added to the end of the list (you may have trouble in game)\n");
 
 						indexAnim = eanFile->getAnimations().size();
 						eanFile->getAnimations().push_back(LibXenoverse::EANAnimation(mSavedAnimation, eanFile));
@@ -701,13 +702,13 @@ int main(int argc, char** argv)
 						LibXenoverse::EANAnimation &animationToChange = eanFile->getAnimations().at(indexAnim);
 						animationToChange.append(*mSavedAnimation);
 
-						printf("animation is changed by append a copy of another. we keep old name (Use rename if you want).\n");
+						printf("Animation has been replaced. Use Rename if you want to update the name)\n");
 					}
 				}else {
-					printf("error : you must use Copy command first, to select the source.\n");
+					printf("Error: No animation in clipboard, use Copy to select the source\n");
 				}
 			}else {
-				printf("index %i is not in ean file list or indexAnim %i is not in list animations.\n", indexFile, indexAnim);
+				printf("There is no EAN file at index %i or indexAnim %i is not in the animation list\n", indexFile, indexAnim);
 			}
 
 
@@ -719,7 +720,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 4)
 			{
-				printf("Missing arguments. try 'Help' command\n");
+				printf("Missing arguments. Try 'Help Cut'\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -727,20 +728,20 @@ int main(int argc, char** argv)
 			size_t indexKfStart = std::stoi(arguments.at(2));
 			size_t indexKfEnd = std::stoi(arguments.at(3));
 
-			if (indexFile < listEanFile.size())
+			if (indexFile < listEANFile.size())
 			{
-				LibXenoverse::EAN *eanFile = listEanFile.at(indexFile);
+				LibXenoverse::EAN *eanFile = listEANFile.at(indexFile);
 				if (indexAnim < eanFile->getAnimations().size())
 				{
 					LibXenoverse::EANAnimation &animationToChange = eanFile->getAnimations().at(indexAnim);
 					animationToChange.cut(indexKfStart, indexKfEnd);
 
-					printf("animation is cutted.\n");
+					printf("Animation has been cut\n");
 				}else {
-					printf("indexAnim don't exist.\n");
+					printf("indexAnim doesn't exist\n");
 				}
 			}else {
-				printf("index %i is not in ean file list or indexAnim %i is not in list animations.\n", indexFile, indexAnim);
+				printf("There is no EAN file at index %i or indexAnim %i is not in the animation list\n", indexFile, indexAnim);
 			}
 
 
@@ -753,7 +754,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 4)
 			{
-				printf("Missing arguments. try 'Help' command\n");
+				printf("Missing arguments. Try 'Help FixedPositionComponent'\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -761,13 +762,13 @@ int main(int argc, char** argv)
 			string boneRef = arguments.at(2);
 			string component = arguments.at(3);
 
-			if (indexFile < listEanFile.size())
+			if (indexFile < listEANFile.size())
 			{
-				size_t indexBone = (isNumber(boneRef) ? std::stoi(boneRef) : ((listEanFile.at(indexFile)->getSkeleton()) ? listEanFile.at(indexFile)->getSkeleton()->getBoneIndex(boneRef) : (size_t)-1));
+				size_t indexBone = (isNumber(boneRef) ? std::stoi(boneRef) : ((listEANFile.at(indexFile)->getSkeleton()) ? listEANFile.at(indexFile)->getSkeleton()->getBoneIndex(boneRef) : (size_t)-1));
 				
 				if ((component == "X") || (component == "Y") || (component == "Z"))
 				{
-					LibXenoverse::EAN *eanFile = listEanFile.at(indexFile);
+					LibXenoverse::EAN *eanFile = listEANFile.at(indexFile);
 
 					if (indexAnim < eanFile->getAnimations().size())
 					{
@@ -803,29 +804,29 @@ int main(int argc, char** argv)
 												keyframes.at(k).z = value_ToFixe;
 										}
 										
-										printf("animation is fixed.\n");
+										printf("Animation is fixed\n");
 										isfound2 = true;
 										break;
 									}
 
 								}
 								if (!isfound2)
-									printf("no 'position' anima exist.\n");
+									printf("No 'position' animations exist\n");
 
 								isfound = true;
 								break;
 							}
 						}
 						if (!isfound)
-							printf("indexBone don't exist.\n");
+							printf("indexBone doesn't exist\n");
 					}else {
-						printf("indexAnim don't exist.\n");
+						printf("indexAnim doesn't exist\n");
 					}
 				}else {
-					printf("component %s is not X Y or Z.\n", component);
+					printf("Component %s is not X Y or Z\n", component);
 				}
 			}else {
-				printf("index %i is not in ean file list or indexAnim %i is not in list animations.\n", indexFile, indexAnim);
+				printf("There is no EAN file at index %i or indexAnim %i is not in the animation list\n", indexFile, indexAnim);
 			}
 
 		
@@ -837,7 +838,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 5)
 			{
-				printf("Missing arguments. try 'Help' command\n");
+				printf("Missing arguments. Try 'Help MovePositionComponent'\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -846,13 +847,13 @@ int main(int argc, char** argv)
 			string component = arguments.at(3);
 			float translationValue = std::stof(arguments.at(4));
 
-			if (indexFile < listEanFile.size())
+			if (indexFile < listEANFile.size())
 			{
-				size_t indexBone = (isNumber(boneRef) ? std::stoi(boneRef) : ((listEanFile.at(indexFile)->getSkeleton()) ? listEanFile.at(indexFile)->getSkeleton()->getBoneIndex(boneRef) : (size_t)-1));
+				size_t indexBone = (isNumber(boneRef) ? std::stoi(boneRef) : ((listEANFile.at(indexFile)->getSkeleton()) ? listEANFile.at(indexFile)->getSkeleton()->getBoneIndex(boneRef) : (size_t)-1));
 				
 				if ((component == "X") || (component == "Y") || (component == "Z"))
 				{
-					LibXenoverse::EAN *eanFile = listEanFile.at(indexFile);
+					LibXenoverse::EAN *eanFile = listEANFile.at(indexFile);
 
 					if (indexAnim < eanFile->getAnimations().size())
 					{
@@ -890,29 +891,29 @@ int main(int argc, char** argv)
 												keyframes.at(k).z += valueToAdd;
 										}
 
-										printf("animation is updated for moving.\n");
+										printf("Animation has been updated\n");
 										isfound2 = true;
 										break;
 									}
 
 								}
 								if (!isfound2)
-									printf("no 'position' anima exist.\n");
+									printf("No 'position' animations exist\n");
 
 								isfound = true;
 								break;
 							}
 						}
 						if (!isfound)
-							printf("indexBone don't exist.\n");
+							printf("indexBone doesn't exist\n");
 					}else {
-						printf("indexAnim don't exist.\n");
+						printf("indexAnim doesn't exist\n");
 					}
 				}else {
-					printf("component %s is not X Y or Z.\n", component);
+					printf("Component %s is not X Y or Z\n", component);
 				}
 			}else {
-				printf("index %i is not in ean file list or indexAnim %i is not in list animations.\n", indexFile, indexAnim);
+				printf("There is no EAN file at index %i or indexAnim %i is not in the animation list\n", indexFile, indexAnim);
 			}
 
 			
@@ -930,22 +931,22 @@ int main(int argc, char** argv)
 
 			if (nbArg < 1)
 			{
-				printf("Missing arguments. try 'Help' command\n");
+				printf("Missing arguments. Try 'Help AddBoneFilter'\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
 			arguments.erase(arguments.begin());
 
-			if (indexFile >= listEanFile.size())
+			if (indexFile >= listEANFile.size())
 			{
-				printf("Error : Wrong indexfile.\n");
+				printf("Error : Wrong indexfile\n");
 				continue;
 			}
 
 
-			size_t nbEanFileFilter = mListBoneFilters.size();
+			size_t nbEANFileFilter = mListBoneFilters.size();
 			size_t isfound = (size_t)-1;
-			for (size_t i = 0; i < nbEanFileFilter; i++)
+			for (size_t i = 0; i < nbEANFileFilter; i++)
 			{
 				if (mListBoneFilters_eanIndex.at(i) == indexFile)
 				{
@@ -964,13 +965,13 @@ int main(int argc, char** argv)
 			for (size_t j = 0; j < nbBoneArg; j++)
 			{
 				string boneRef = arguments.at(j);
-				size_t indexBone = (isNumber(boneRef) ? std::stoi(boneRef) : ((listEanFile.at(indexFile)->getSkeleton()) ? listEanFile.at(indexFile)->getSkeleton()->getBoneIndex(boneRef) : (size_t)-1));
+				size_t indexBone = (isNumber(boneRef) ? std::stoi(boneRef) : ((listEANFile.at(indexFile)->getSkeleton()) ? listEANFile.at(indexFile)->getSkeleton()->getBoneIndex(boneRef) : (size_t)-1));
 				if (indexBone == (size_t)-1)
 					continue;
 
 				size_t nbBone = mListBoneFilters.at(isfound).size();
 				bool isfound_2 = false;
-				for (size_t i = 0; i < nbEanFileFilter; i++)
+				for (size_t i = 0; i < nbEANFileFilter; i++)
 				{
 					if (mListBoneFilters.at(isfound).at(i) == indexBone)
 					{
@@ -993,23 +994,23 @@ int main(int argc, char** argv)
 
 			if (nbArg < 1)
 			{
-				printf("Missing arguments. try 'Help' command\n");
+				printf("Missing arguments. Try 'Help AddAllBoneInFilterFor'\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
 			arguments.erase(arguments.begin());
 
 
-			if (indexFile >= listEanFile.size())
+			if (indexFile >= listEANFile.size())
 			{
-				printf("Error : Wrong indexfile.\n");
+				printf("Error : Wrong indexfile\n");
 				continue;
 			}
 
 
-			size_t nbEanFileFilter = mListBoneFilters.size();
+			size_t nbEANFileFilter = mListBoneFilters.size();
 			size_t isfound = (size_t)-1;
-			for (size_t i = 0; i < nbEanFileFilter; i++)
+			for (size_t i = 0; i < nbEANFileFilter; i++)
 			{
 				if (mListBoneFilters_eanIndex.at(i) == indexFile)
 				{
@@ -1026,9 +1027,9 @@ int main(int argc, char** argv)
 			}
 
 
-			if (indexFile < listEanFile.size())
+			if (indexFile < listEANFile.size())
 			{
-				LibXenoverse::EAN *eanFile = listEanFile.at(indexFile);
+				LibXenoverse::EAN *eanFile = listEANFile.at(indexFile);
 
 				size_t  nbBone = eanFile->getSkeleton()->getBones().size();
 				size_t nbBoneArg = arguments.size();
@@ -1038,7 +1039,7 @@ int main(int argc, char** argv)
 					for (size_t j = 0; j < nbBoneArg; j++)
 					{
 						string boneRef = arguments.at(j);
-						size_t indexBone = (isNumber(boneRef) ? std::stoi(boneRef) : ((listEanFile.at(indexFile)->getSkeleton()) ? listEanFile.at(indexFile)->getSkeleton()->getBoneIndex(boneRef) : (size_t)-1));
+						size_t indexBone = (isNumber(boneRef) ? std::stoi(boneRef) : ((listEANFile.at(indexFile)->getSkeleton()) ? listEANFile.at(indexFile)->getSkeleton()->getBoneIndex(boneRef) : (size_t)-1));
 						if (indexBone == (size_t)-1)
 							continue;
 
@@ -1053,7 +1054,7 @@ int main(int argc, char** argv)
 					{
 						size_t nbBone = mListBoneFilters.at(isfound).size();
 						bool isfound_2 = false;
-						for (size_t i = 0; i < nbEanFileFilter; i++)
+						for (size_t i = 0; i < nbEANFileFilter; i++)
 						{
 							if (mListBoneFilters.at(isfound).at(i) == k)
 							{
@@ -1075,7 +1076,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 2)
 			{
-				printf("Missing arguments. try 'Help' command\n");
+				printf("Missing arguments. Try 'Help AddBoneFilterPreset' to list all available presets\n");
 				continue;
 			}
 			string indexFile_str = arguments.at(0);
@@ -1137,7 +1138,7 @@ int main(int argc, char** argv)
 				line = "AddBoneFilter " + indexFile_str + " a_x_flute a_x_glasses";
 				automaticLine = true;
 			}else {
-				printf("Unknow preset's name. try 'Help' command\n");
+				printf("Unknown preset. Try 'Help AddBoneFilterPreset' to list all available presets\n");
 			}
 
 			if (automaticLine)
@@ -1149,7 +1150,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 3)
 			{
-				printf("Missing arguments. try 'Help' command\n");
+				printf("Missing arguments. Try 'Help Rename'\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -1158,13 +1159,13 @@ int main(int argc, char** argv)
 
 
 
-			if ((indexFile < listEanFile.size()) && (indexAnim < listEanFile.at(indexFile)->getAnimations().size()))
+			if ((indexFile < listEANFile.size()) && (indexAnim < listEANFile.at(indexFile)->getAnimations().size()))
 			{
-				LibXenoverse::EAN *eanFile = listEanFile.at(indexFile);
+				LibXenoverse::EAN *eanFile = listEANFile.at(indexFile);
 				eanFile->getAnimations().at(indexAnim).setName(newName);
-				printf("Name changed.\n");
+				printf("Name changed\n");
 			}else{
-				printf("index %i is not in ean file list or indexAnim %i is not in list animations.\n", indexFile, indexAnim);
+				printf("There is no EAN file at index %i or indexAnim %i is not in the animation list\n", indexFile, indexAnim);
 			}
 
 
@@ -1174,7 +1175,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 2)
 			{
-				printf("Missing arguments. try 'Help' command\n");
+				printf("Missing arguments. Try 'Help Erase'\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -1184,24 +1185,24 @@ int main(int argc, char** argv)
 				indexAnim_range_end = std::stoi(arguments.at(2));
 
 
-			if ((indexFile < listEanFile.size()) && (indexAnim < listEanFile.at(indexFile)->getAnimations().size()))
+			if ((indexFile < listEANFile.size()) && (indexAnim < listEANFile.at(indexFile)->getAnimations().size()))
 			{
-				LibXenoverse::EAN *eanFile = listEanFile.at(indexFile);
+				LibXenoverse::EAN *eanFile = listEANFile.at(indexFile);
 				if ((indexAnim_range_end != (size_t)-1) && (indexAnim_range_end>indexAnim))
 				{
 					for (size_t i = indexAnim_range_end; i >= indexAnim; i--)
 					{
 						eanFile->getAnimations().erase(eanFile->getAnimations().begin() + i);
-						printf("Animation %i Erased.\n", i);
+						printf("Animation %i erased\n", i);
 					}
 
 				}else{
 					eanFile->getAnimations().erase(eanFile->getAnimations().begin() + indexAnim);
-					printf("Animation Erased.\n");
+					printf("Animation erased\n");
 				}
 			}
 			else{
-				printf("index %i is not in ean file list or indexAnim %i is not in list animations.\n", indexFile, indexAnim);
+				printf("There is no EAN file at index %i or indexAnim %i is not in the animation list\n", indexFile, indexAnim);
 			}
 
 
@@ -1212,7 +1213,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 2)
 			{
-				printf("Missing arguments. try 'Help' command\n");
+				printf("Missing arguments. Try 'Help Insert'\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -1220,11 +1221,11 @@ int main(int argc, char** argv)
 
 
 
-			if ((indexFile < listEanFile.size()) && (indexAnim <= listEanFile.at(indexFile)->getAnimations().size()))
+			if ((indexFile < listEANFile.size()) && (indexAnim <= listEANFile.at(indexFile)->getAnimations().size()))
 			{
 				if (mSavedAnimation)
 				{
-					LibXenoverse::EAN *eanFile = listEanFile.at(indexFile);
+					LibXenoverse::EAN *eanFile = listEANFile.at(indexFile);
 
 					if (indexAnim == eanFile->getAnimations().size())
 					{
@@ -1233,12 +1234,12 @@ int main(int argc, char** argv)
 						eanFile->getAnimations().insert(eanFile->getAnimations().begin() + indexAnim, (LibXenoverse::EANAnimation(mSavedAnimation, eanFile)));
 					}
 
-					printf("animation added.\n");
+					printf("Animation added\n");
 				}else{
-					printf("error : you must use Copy command first, to select the source.\n");
+					printf("Error: No animation in clipboard, use Copy to select the source\n");
 				}
 			}else{
-				printf("index %i is not in ean file list or indexAnim %i is not in list animations.\n", indexFile, indexAnim);
+				printf("There is no EAN file at index %i or indexAnim %i is not in the animation list\n", indexFile, indexAnim);
 			}
 
 		
@@ -1251,7 +1252,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 9)
 			{
-				printf("Missing arguments. try 'Help' command\n");
+				printf("Missing arguments. Try 'Help AddBoneOffsetScaleOnAnimationPosition'\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -1265,11 +1266,11 @@ int main(int argc, char** argv)
 			float scaletoMultiply_Z = std::stof(arguments.at(8));
 
 
-			if ((indexFile < listEanFile.size()) && ((indexAnim==-1)||(indexAnim < listEanFile.at(indexFile)->getAnimations().size())))
+			if ((indexFile < listEANFile.size()) && ((indexAnim==-1)||(indexAnim < listEANFile.at(indexFile)->getAnimations().size())))
 			{
-				size_t indexBone = (isNumber(boneRef) ? std::stoi(boneRef) : ((listEanFile.at(indexFile)->getSkeleton()) ? listEanFile.at(indexFile)->getSkeleton()->getBoneIndex(boneRef) : (size_t)-1));
+				size_t indexBone = (isNumber(boneRef) ? std::stoi(boneRef) : ((listEANFile.at(indexFile)->getSkeleton()) ? listEANFile.at(indexFile)->getSkeleton()->getBoneIndex(boneRef) : (size_t)-1));
 
-				LibXenoverse::EAN *eanFile = listEanFile.at(indexFile);
+				LibXenoverse::EAN *eanFile = listEANFile.at(indexFile);
 				
 				vector<LibXenoverse::EANAnimation> &listAnimation = eanFile->getAnimations();
 				
@@ -1310,15 +1311,15 @@ int main(int argc, char** argv)
 						}
 
 						if (!isfound)
-							printf("animation %s don't have bone with index %i. Use GetBoneList command to look the bone present in this animation.\n", animation->getName().c_str(), indexBone);
+							printf("Animation %s doesn't have a bone with index %i. Use GetBoneList command to list the bones in this animation\n", animation->getName().c_str(), indexBone);
 					}
 
 				}
 
-				printf("Done.\n");
+				printf("Done\n");
 
 			}else{
-				printf("index %i is not in ean file list or indexAnim %i is not in list animations.\n", indexFile, indexAnim);
+				printf("There is no EAN file at index %i or indexAnim %i is not in the animation list\n", indexFile, indexAnim);
 			}
 
 
@@ -1330,7 +1331,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 2)
 			{
-				printf("Missing arguments. try 'Help' command\n");
+				printf("Missing arguments. Try 'Help GetDuration'\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -1338,16 +1339,16 @@ int main(int argc, char** argv)
 			string boneRef = (nbArg>2) ? arguments.at(2)  : "";
 
 
-			if ((indexFile < listEanFile.size()) && (indexAnim < listEanFile.at(indexFile)->getAnimations().size()))
+			if ((indexFile < listEANFile.size()) && (indexAnim < listEANFile.at(indexFile)->getAnimations().size()))
 			{
-				size_t indexBone = (isNumber(boneRef) ? std::stoi(boneRef) : ((listEanFile.at(indexFile)->getSkeleton()) ? listEanFile.at(indexFile)->getSkeleton()->getBoneIndex(boneRef) : (size_t)-1));
+				size_t indexBone = (isNumber(boneRef) ? std::stoi(boneRef) : ((listEANFile.at(indexFile)->getSkeleton()) ? listEANFile.at(indexFile)->getSkeleton()->getBoneIndex(boneRef) : (size_t)-1));
 
-				LibXenoverse::EAN *eanFile = listEanFile.at(indexFile);
+				LibXenoverse::EAN *eanFile = listEANFile.at(indexFile);
 				LibXenoverse::EANAnimation *animation = &(eanFile->getAnimations().at(indexAnim));
 				
 				if (indexBone == (size_t)-1)
 				{
-					printf("animation %s have %i frames (60 fps) so %f second\n", animation->getName().c_str(), animation->getFrameCount(), animation->getFrameCount() * (1.0 / 60.0));
+					printf("Animation %s is %i frame(/s) or %f second(/s) in duration\n", animation->getName().c_str(), animation->getFrameCount(), animation->getFrameCount() * (1.0 / 60.0));
 				}else{
 
 					vector<LibXenoverse::EANAnimationNode> &listNodes = animation->getNodes();
@@ -1377,14 +1378,14 @@ int main(int argc, char** argv)
 							}
 						}
 						
-						printf("animation %s for bone index %i have %i frames (60 fps) so %f second\n", animation->getName().c_str(), indexBone, nblastKeyframe, nblastKeyframe * (1.0 / 60.0));
+						printf("Animation %s for bone index %i is %i frame(/s) or %f second(/s) in duration\n", animation->getName().c_str(), indexBone, nblastKeyframe, nblastKeyframe * (1.0 / 60.0));
 						break;
 					}
 					if (!isfound)
-						printf("animation %s don't have bone with index %i. Use GetBoneList command to look the bone present in this animation.\n", animation->getName().c_str(), indexBone);
+						printf("Animation %s doesn't have a bone with index %i. Use GetBoneList command to list the bones in this animation\n", animation->getName().c_str(), indexBone);
 				}
 			}else{
-				printf("index %i is not in ean file list or indexAnim %i is not in list animations.\n", indexFile, indexAnim);
+				printf("There is no EAN file at index %i or indexAnim %i is not in the animation list\n", indexFile, indexAnim);
 			}
 
 
@@ -1397,7 +1398,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 2)
 			{
-				printf("Missing arguments. try 'Help' command\n");
+				printf("Missing arguments. Try 'Help SetDurationInFrames'\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -1429,11 +1430,11 @@ int main(int argc, char** argv)
 				}
 			};
 
-			if ((indexFile < listEanFile.size()) && (indexAnim < listEanFile.at(indexFile)->getAnimations().size()))
+			if ((indexFile < listEANFile.size()) && (indexAnim < listEANFile.at(indexFile)->getAnimations().size()))
 			{
-				size_t indexBone = (isNumber(boneRef) ? std::stoi(boneRef) : ((listEanFile.at(indexFile)->getSkeleton()) ? listEanFile.at(indexFile)->getSkeleton()->getBoneIndex(boneRef) : (size_t)-1));
+				size_t indexBone = (isNumber(boneRef) ? std::stoi(boneRef) : ((listEANFile.at(indexFile)->getSkeleton()) ? listEANFile.at(indexFile)->getSkeleton()->getBoneIndex(boneRef) : (size_t)-1));
 
-				LibXenoverse::EAN *eanFile = listEanFile.at(indexFile);
+				LibXenoverse::EAN *eanFile = listEANFile.at(indexFile);
 				LibXenoverse::EANAnimation *animation = &(eanFile->getAnimations().at(indexAnim));
 
 				size_t original_Duration_inFrames = (size_t)-1;
@@ -1486,7 +1487,7 @@ int main(int argc, char** argv)
 					}
 					if (!isfound)
 					{
-						printf("animation %s don't have bone with index %i. Use GetBoneList command to look the bone present in this animation.\n", animation->getName().c_str(), indexBone);
+						printf("Animation %s doesn't have bone with index %i. Use GetBoneList command to see the list of bones in this animation\n", animation->getName().c_str(), indexBone);
 						continue;
 					}
 				}
@@ -1541,10 +1542,10 @@ int main(int argc, char** argv)
 						break;
 				}
 
-				printf("Done.\n");
+				printf("Done\n");
 
 			}else{
-				printf("index %i is not in ean file list or indexAnim %i is not in list animations.\n", indexFile, indexAnim);
+				printf("There is no EAN file at index %i or indexAnim %i is not in the animation list\n", indexFile, indexAnim);
 			}
 
 
@@ -1555,7 +1556,7 @@ int main(int argc, char** argv)
 
 			if (nbArg < 2)
 			{
-				printf("Missing arguments. try 'Help' command\n");
+				printf("Missing arguments. Try 'Help LoopAnimation'\n");
 				continue;
 			}
 			size_t indexFile = std::stoi(arguments.at(0));
@@ -1573,16 +1574,16 @@ int main(int argc, char** argv)
 
 			if (nbLoops <= 1)
 			{
-				printf("minimum loop parameter is 1. skipped\n");
+				printf("Minimum loop parameter is 1\n");
 				continue;
 			}
 
 
-			if ((indexFile < listEanFile.size()) && (indexAnim < listEanFile.at(indexFile)->getAnimations().size()))
+			if ((indexFile < listEANFile.size()) && (indexAnim < listEANFile.at(indexFile)->getAnimations().size()))
 			{
-				size_t indexBone = (isNumber(boneRef) ? std::stoi(boneRef) : ((listEanFile.at(indexFile)->getSkeleton()) ? listEanFile.at(indexFile)->getSkeleton()->getBoneIndex(boneRef) : (size_t)-1));
+				size_t indexBone = (isNumber(boneRef) ? std::stoi(boneRef) : ((listEANFile.at(indexFile)->getSkeleton()) ? listEANFile.at(indexFile)->getSkeleton()->getBoneIndex(boneRef) : (size_t)-1));
 				
-				LibXenoverse::EAN *eanFile = listEanFile.at(indexFile);
+				LibXenoverse::EAN *eanFile = listEANFile.at(indexFile);
 				LibXenoverse::EANAnimation *animation = &(eanFile->getAnimations().at(indexAnim));
 
 				size_t original_Duration_inFrames = (size_t)-1;
@@ -1625,7 +1626,7 @@ int main(int argc, char** argv)
 					}
 					if (!isfound)
 					{
-						printf("animation %s don't have bone with index %i. Use GetBoneList command to look the bone present in this animation.\n", animation->getName().c_str(), indexBone);
+						printf("Animation %s don't have bone with index %i. Use GetBoneList command to see the list of bones in this animation\n", animation->getName().c_str(), indexBone);
 						continue;
 					}
 				}
@@ -1677,10 +1678,10 @@ int main(int argc, char** argv)
 						break;
 				}
 
-				printf("Done.\n");
+				printf("Done\n");
 
 			}else{
-				printf("index %i is not in ean file list or indexAnim %i is not in list animations.\n", indexFile, indexAnim);
+				printf("There is no EAN file at index %i or indexAnim %i is not in the animation list\n", indexFile, indexAnim);
 			}
 
 
@@ -1690,7 +1691,7 @@ int main(int argc, char** argv)
 			
 			if (nbArg < 4)
 			{
-				printf("Missing arguments. try 'Help' command\n");
+				printf("Missing arguments. Try 'Help MatchAnimationDuration'\n");
 				continue;
 			}
 			size_t indexFile_src = std::stoi(arguments.at(0));
@@ -1724,10 +1725,10 @@ int main(int argc, char** argv)
 			};
 
 			
-			if ((indexFile_src < listEanFile.size()) && (indexFile_dest < listEanFile.size()) && (indexAnim_start < listEanFile.at(indexFile_dest)->getAnimations().size()) && (indexAnim_end < listEanFile.at(indexFile_dest)->getAnimations().size()))
+			if ((indexFile_src < listEANFile.size()) && (indexFile_dest < listEANFile.size()) && (indexAnim_start < listEANFile.at(indexFile_dest)->getAnimations().size()) && (indexAnim_end < listEANFile.at(indexFile_dest)->getAnimations().size()))
 			{
-				LibXenoverse::EAN *eanFile_src = listEanFile.at(indexFile_src);
-				LibXenoverse::EAN *eanFile_dest = listEanFile.at(indexFile_dest);
+				LibXenoverse::EAN *eanFile_src = listEANFile.at(indexFile_src);
+				LibXenoverse::EAN *eanFile_dest = listEANFile.at(indexFile_dest);
 
 
 				for (size_t animIndex = indexAnim_start; animIndex <= indexAnim_end; animIndex++)
@@ -1763,11 +1764,11 @@ int main(int argc, char** argv)
 
 					if (animation_src == 0)
 					{
-						printf("Warning there isn't animation named %s in Ean_scr. skipped\n", animation->getName().c_str());
+						printf("There is no animation named %s in EAN_src\n", animation->getName().c_str());
 						continue;
 					}
 					else{
-						printf("animation %s is found in Ean_scr and have %i frames (60 fps) so %f second\n", animation_src->getName().c_str(), animation_src->getFrameCount(), animation_src->getFrameCount() * (1.0 / 60.0));
+						printf("There is no animation named %s in EAN_src. %i frame(/s) or %f second(/s) in duration\n", animation_src->getName().c_str(), animation_src->getFrameCount(), animation_src->getFrameCount() * (1.0 / 60.0));
 					}
 					
 
@@ -1827,20 +1828,20 @@ int main(int argc, char** argv)
 
 
 				}
-				printf("Done.\n");
+				printf("Done\n");
 
 			}else{
-				printf("index %i or %i is not in ean file list or indexAnim %i or %i is not in list animations.\n", indexAnim_start, indexAnim_end, indexFile_src, indexFile_dest);
+				printf("There are no EAN files at index %i or %i or no animations at indexAnim %i or %i\n", indexAnim_start, indexAnim_end, indexFile_src, indexFile_dest);
 			}
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
 		}else{
-			printf("Unknow command *%s*.\n Type 'Help' to see valid commands\n", command.c_str());
+			printf("Unknown command *%s*.\n Type 'Help' to list all available commands\n", command.c_str());
 		}
 	}
 	
 
-	printf("Ok. goodbye. See you next time.\n");
+	printf("Goodbye. See you soon!\n");
 	return 0;
 }
