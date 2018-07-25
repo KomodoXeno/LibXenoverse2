@@ -54,7 +54,7 @@ int main(int argc, char** argv)
 
 	LibXenoverse::initializeDebuggingLog();
 
-	printf("Welcome to EAN Organizer v0.9.2kx\n\n");
+	printf("Welcome to EAN Organizer v0.9.3kx\n\n");
 
 
 	string help = "Commands:\n\
