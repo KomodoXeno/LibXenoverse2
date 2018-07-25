@@ -122,7 +122,7 @@ int main(int argc, char** argv)
 	helptext["LOOPANIMATION"] = "LoopAnimation <indexEAN> <indexAnim> <indexBone> X\nLoop the animation to increase the duration\n	You can specify a bone with [indexBone] argument\n\n";
 	helptext["ADDBONEOFFSETSCALEONANIMATIONPOSITION"] = "AddBoneOffsetScaleOnAnimationPosition <indexEAN> <indexAnim> <indexBone> <offsetToAdd_X> <offsetToAdd_Y> <offsetToAdd_Z> <scaleToMultiply_X> <scaleToMultiply_Y> <scaleToMultiply_Z>\nAdd an offset to a bone and/or multiply by scale.\n	Note: Use -1 for <indexAnim> to apply to all animations.\n	Neutral Values: offsetToAdd: 0.0, scaleToMultiply: 1.0\n\n";
 	helptext["MATCHANIMATIONDURATION"] = "MatchAnimationDuration <indexEAN_src> <indexEAN_toMatch> <indexAnim_Start> <indexAnim_End>\nThe SECOND EAN will have the same duration of the animation from the source EAN\n\n";
-	//helptext["MATCHCHARAID"] = "MatchCharaID <indexEAN> <XXX>\nSet the Character ID <XXX> to quickly rename all animations\n\n"; 
+	helptext["MATCHCHARAID"] = "MatchCharaID <indexEAN> <XXX>\nSet the Character ID <XXX> to quickly rename all animations\n\n"; 
 	helptext["QUIT"] = "Quit\nExit the program\n\n";
 
 	printf((string("You can load several EAN Files, list their animations, copy an animation from one EAN to another. KEEP ORDER of animations if you want to use modified ean in game (need configurator).\n\n") + help +"\n").c_str());
