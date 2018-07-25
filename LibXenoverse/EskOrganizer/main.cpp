@@ -117,7 +117,7 @@ int main(int argc, char** argv)
 	helptext["QUIT"] = "Quit\nExit the program\n\n";	
 	//helptext["GETBONEROTATION"] = "GetBoneRotation <indexESK> <indexBone> [absolute]\nGet the bone taitBryan angles (know also as EulerAngle, with the diference to have this order : RotY (Yaw) -> RotZ (pitch) -> RotX (Roll) like a plane) information of the orientation, absolute if true (else relative)\n\n";
 	//helptext["SETBONEROTATION"] = "SetBoneRotation <indexESK> <indexBone> <RotY> <RotZ> <RotX> [absolute]\nSet rotation of specified bone\n\n";
-	printf((string("You can load ESK, EAN, and EMD file and list their bones.\nPlease avoid using spaces in filepaths.\nDon't rename c_Base and root bone. Keep unique names at the end!\n\n") + help +"\n").c_str());
+	printf((string("You can load ESK, EAN, and EMD file and list their bones.\nDon't rename c_Base and root bone. Keep unique names at the end!\n\n") + help +"\n").c_str());
 
 	struct EanOrEskFile
 	{
