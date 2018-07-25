@@ -87,7 +87,7 @@ int main(int argc, char** argv)
 	'SetDurationInFrames <indexEAN> <indexAnim> [indexBone] X'\n\
 	'LoopAnimation <indexEAN> <indexAnim> <indexBone> X'\n\
 	'MatchAnimationDuration <EAN_src> <EAN_toMatch> <animStart> <animEnd>'\n\
-	'AddBoneOffsetScaleOnAnimationPosition (see 'Help AddBoneOffsetScaleOnAnimationPosition' for usage)\n\
+	'AddBoneOffsetScaleOnAnimationPosition' (see 'Help AddBoneOffsetScaleOnAnimationPosition' for usage)\n\
 	'Quit'\n\
 	\n\
 	note: <indexBone> can be substituted with the bone name, e.g. AddBoneFilter 0 b_R_Arm1\n";
