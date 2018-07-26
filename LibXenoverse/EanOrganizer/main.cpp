@@ -4,7 +4,6 @@
 
 #define BUFLEN 1024
 
-
 std::vector<std::string> split(const std::string &text, char sep)
 {
 	std::vector<std::string> tokens;
@@ -54,7 +53,7 @@ int main(int argc, char** argv)
 
 	LibXenoverse::initializeDebuggingLog();
 
-	printf("Welcome to EAN Organizer v0.9.3kx\n\n");
+	printf("Welcome to EAN Organizer v0.9.5kx\n\n");
 
 
 	string help = "Commands:\n\
@@ -80,8 +79,8 @@ int main(int argc, char** argv)
 	'GetBoneFilter'\n\
 	'ResetBoneFilter'\n\
 	'PasteWithBoneFilter <indexEAN> <indexAnim>'\n\
-	'CopyPasteRange <EAN_Src> <EAN_Dest> <animStart> <animEnd> [DestinationStart]'\n\
-	'CopyPasteRange_WithBoneFilter <EAN_Src> <EAN_Dest> <animStart> <animEnd> [DestinationStart]'\n\
+	'CopyPasteRange <EAN_Src> <EAN_Dest> <animStart> <animEnd> <DestinationStart>'\n\
+	'CopyPasteRange_WithBoneFilter <EAN_Src> <EAN_Dest> <animStart> <animEnd> <DestinationStart>'\n\
 	'GetDuration <indexEAN> <indexAnim> [indexBone]'\n\
 	'SetDuration <indexEAN> <indexAnim> [indexBone] X.xxx'\n\
 	'SetDurationInFrames <indexEAN> <indexAnim> [indexBone] X'\n\
@@ -102,32 +101,32 @@ int main(int argc, char** argv)
 	helptext["RENAME"] = "Rename <indexEAN> <indexAnim> <newName>\nRename a specified animation\n\n";
 	helptext["COPY"] = "Copy\nCopy on the specified animation to clipboard\n\n";
 	helptext["PASTE"] = "Paste <indexEAN> <indexAnim>\nPaste clipboard animation OVER destination animation\n\n";
-	helptext["APPEND"] = "Append <indexEAN> <indexAnim>\nAdd the animation to an EAN.\n	Note: A new keyframe will be added to the end, do not delete\n\n";
+	helptext["APPEND"] = "Append <indexEAN> <indexAnim>\nAdd the animation to an EAN.\nNote: A new keyframe will be added to the end, do not delete\n\n";
 	helptext["CUT"] = "Cut <indexEAN> <indexAnim> <indexKeyFrame_Start or -1> <indexKeyFrame_End or -1>\nCut the animation to keep the range. Use -1 to for default value\n\n";
-	helptext["FIXEDPOSITIONCOMPONENT"] = "FixedPositionComponent <indexEAN> <indexAnim> <indexBone> <component X Y or Z>\n	Use the value on the first keyframe to replace all other keyframes, for all the component of a animation of a bone\n\n";
-	helptext["MOVEPOSITIONCOMPONENT"] = "MovePositionComponent <indexEAN> <indexAnim> <indexBone> <component X Y or Z> X.xxx\n	Move the animation for a component of position of the bone on an animation\n\n";
-	helptext["ERASE"] = "Erase <indexEAN> <indexAnim> [indexAnim_rangeEnd]\nErase only Animation in indexAnim\n	If you use [indexAnim_rangeEnd], it will erase the entire range between the two indexAnim\n\n";
+	helptext["FIXEDPOSITIONCOMPONENT"] = "FixedPositionComponent <indexEAN> <indexAnim> <indexBone> <component X Y or Z>\nUse the value on the first keyframe to replace all other keyframes, for all the component of a animation of a bone\n\n";
+	helptext["MOVEPOSITIONCOMPONENT"] = "MovePositionComponent <indexEAN> <indexAnim> <indexBone> <component X Y or Z> X.xxx\nMove the animation for a component of position of the bone on an animation\n\n";
+	helptext["ERASE"] = "Erase <indexEAN> <indexAnim> [indexAnim_rangeEnd]\nErase only Animation in indexAnim\nIf you use [indexAnim_rangeEnd], it will erase the entire range between the two indexAnim\n\n";
 	helptext["INSERT"] = "Insert <indexEAN> <indexAnim>\nInsert an animation before index of Animation specified\n\n";
-	helptext["ADDBONEFILTER"] = "AddBoneFilter <indexEAN> <indexBone1> [indexBone2] [indexBone3] ...\nBy using the filter, when you paste with bone filter, only the specified bones will be affected\n	If you justto copy the animation from the tail, only specify the tail bones	<boneIndex> can be substituted for bone names e.g. b_R_Arm1\n\n";
+	helptext["ADDBONEFILTER"] = "AddBoneFilter <indexEAN> <indexBone1> [indexBone2] [indexBone3] ...\nBy using the filter, when you paste with bone filter, only the specified bones will be affected\ne.g. if you want to copy the animation from the tail, only specify the tail bones	<boneIndex> can be substituted for bone names e.g. b_R_Arm1\n\n";
 	helptext["GETBONEFILTER"] = "GetBoneFilter\nGet bones currently in the bone filter\n\n";
 	helptext["ADDALLBONEINFILTERFOR"] = "AddAllBoneInFilterFor <indexEAN> <indexBone1_notIn> [indexBone2_notIn] [indexBone3_notIn] ...\nQuick way to add all bones to filter except for the bones specified\n\n";
 	helptext["ADDBONEFILTERPRESET"] = "AddBoneFilterPreset <indexEAN> <presetName>\nAdd a preset list of bones to the bone filter:\n\n	'torso'\n	'head'\n	'arms'\n	'arm_left'\n	'arm_right'\n	'hands'\n	'hand_left'\n	'hand_right'\n	'legs'\n	'leg_left'\n	'leg_right'\n	'tail'\n	'wings'\n	'spines'\n	'sword'\n	'cane'\n	'spear'\n	'accessories'\n\n";
 	helptext["RESETBONEFILTER"] = "ResetBoneFilter\nClear the bonefilter\n\n";
 	helptext["PASTEWITHBONEFILTER"] = "PasteWithBoneFilter <indexEAN> <indexAnim>\nPaste copied animation with bone filter'\n\n";
-	helptext["COPYPASTERANGE"] = "CopyPasteRange <indexEAN_Src> <indexEAN_Dest> <indexAnim_Start> <indexAnim_End> [indexAnim_DestinationStart]\nCopy and paste a range of animations\n	[indexAnim_DestinationStart] is a index for start the paste on destination. (that will add new aniamtion if up to number of animations of destination)\n\n";
-	helptext["COPYPASTERANGE_WITHBONEFILTER"] = "CopyPasteRange_WithBoneFilter <indexEAN_Src> <indexEAN_Dest> <indexAnim_Start> <indexAnim_End> [indexAnim_DestinationStart]\nCopy and paste a range of animations with the bone filter\n	[indexAnim_DestinationStart] will specify a start the paste on destination. (that will add new aniamtion if up to number of animations of destination)\n\n";
-	helptext["GETDURATION"] = "GetDuration <indexEAN> <indexAnim> [indexBone] X.xxx\nGet the duration of a animation\n	You can specify a bone with [indexBone] argument\n\n";
-	helptext["SETDURATION"] = "SetDuration <indexEAN> <indexAnim> [indexBone]\nSet the duration of a animation\n	You can specify a bone with [indexBone] argument\n\n";
-	helptext["SETDURATIONINFRAMES"] = "SetDurationInFrames <indexEAN> <indexAnim> [indexBone] X\nSet the duration of a animation in frames\n	You can specify a bone with [indexBone] argument\n\n";
-	helptext["LOOPANIMATION"] = "LoopAnimation <indexEAN> <indexAnim> <indexBone> X\nLoop the animation to increase the duration\n	You can specify a bone with [indexBone] argument\n\n";
-	helptext["ADDBONEOFFSETSCALEONANIMATIONPOSITION"] = "AddBoneOffsetScaleOnAnimationPosition <indexEAN> <indexAnim> <indexBone> <offsetToAdd_X> <offsetToAdd_Y> <offsetToAdd_Z> <scaleToMultiply_X> <scaleToMultiply_Y> <scaleToMultiply_Z>\nAdd an offset to a bone and/or multiply by scale.\n	Note: Use -1 for <indexAnim> to apply to all animations.\n	Neutral Values: offsetToAdd: 0.0, scaleToMultiply: 1.0\n\n";
+	helptext["COPYPASTERANGE"] = "CopyPasteRange <indexEAN_Src> <indexEAN_Dest> <indexAnim_Start> <indexAnim_End> <indexAnim_DestinationStart>\nCopy and paste a range of animations\n<indexAnim_DestinationStart> refers to the start position of the range to paste\nfor example a value of 10 would mean your range is copied to index 10+ \n(this may add new animations to the EAN if you reach the end)\n\n";
+	helptext["COPYPASTERANGE_WITHBONEFILTER"] = "CopyPasteRange_WithBoneFilter <indexEAN_Src> <indexEAN_Dest> <indexAnim_Start> <indexAnim_End> <indexAnim_DestinationStart>\nCopy and paste a range of animations with the bone filter\n<indexAnim_DestinationStart> refers to the start position of the range to paste\nfor example a value of 10 would mean your range is copied to index 10+ \n(this may add new animations to the EAN if you reach the end)\n\n";
+	helptext["GETDURATION"] = "GetDuration <indexEAN> <indexAnim> [indexBone] X.xxx\nGet the duration of a animation\nYou can specify a bone with [indexBone] argument\n\n";
+	helptext["SETDURATION"] = "SetDuration <indexEAN> <indexAnim> [indexBone]\nSet the duration of a animation\nYou can specify a bone with [indexBone] argument\n\n";
+	helptext["SETDURATIONINFRAMES"] = "SetDurationInFrames <indexEAN> <indexAnim> [indexBone] X\nSet the duration of a animation in frames\nYou can specify a bone with [indexBone] argument\n\n";
+	helptext["LOOPANIMATION"] = "LoopAnimation <indexEAN> <indexAnim> <indexBone> X\nLoop the animation to increase the duration\nYou can specify a bone with [indexBone] argument\n\n";
+	helptext["ADDBONEOFFSETSCALEONANIMATIONPOSITION"] = "AddBoneOffsetScaleOnAnimationPosition <indexEAN> <indexAnim> <indexBone> <offsetToAdd_X> <offsetToAdd_Y> <offsetToAdd_Z> <scaleToMultiply_X> <scaleToMultiply_Y> <scaleToMultiply_Z>\nAdd an offset to a bone and/or multiply by scale\nNote: Use -1 for <indexAnim> to apply to all animations.\nNeutral Values: offsetToAdd: 0.0, scaleToMultiply: 1.0\n\n";
 	helptext["MATCHANIMATIONDURATION"] = "MatchAnimationDuration <indexEAN_src> <indexEAN_toMatch> <indexAnim_Start> <indexAnim_End>\nThe SECOND EAN will have the same duration of the animation from the source EAN\n\n";
-	helptext["MATCHCHARAID"] = "MatchCharaID <indexEAN> <XXX>\nSet the Character ID <XXX> to quickly rename all animations\n\n"; 
 	helptext["QUIT"] = "Quit\nExit the program\n\n";
+	
+	printf((string("You can load several EAN Files, list their animations, copy an animation from one EAN to another. KEEP ORDER of animations if you want to use modified ean in game (need configurator).\n\n") + help + "\n").c_str());
 
-	printf((string("You can load several EAN Files, list their animations, copy an animation from one EAN to another. KEEP ORDER of animations if you want to use modified ean in game (need configurator).\n\n") + help +"\n").c_str());
-
-
+	//helptext["MATCHCHARAID"] = "MatchCharaID <indexEAN> <XXX>\nSet the Character ID <XXX> to quickly rename all animations\n\n";
+	//helptext["MATCHCHARAID"] = "MatchCharaID <indexEAN> <XXX> <YYY>\nRename the Character ID <XXX> to quickly rename all animations\n\n"; 
 	
 	vector<LibXenoverse::EAN*> listEANFile;
 	vector<string> listFileName;
@@ -381,7 +380,7 @@ int main(int argc, char** argv)
 		///////////////////////////////////////////////////////////////////////////////////////////////////
 		}else if (command == "COPYPASTERANGE_WITHBONEFILTER"){
 
-			if (nbArg < 4)
+			if (nbArg < 5)
 			{
 				printf("Missing arguments. Try 'Help CopyPasteRange_WithBoneFilter'\n");
 				continue;
@@ -452,7 +451,7 @@ int main(int argc, char** argv)
 
 							LibXenoverse::EANAnimation &animationToChange = eanFile->getAnimations().at(indexAnim_dest);
 							animationToChange.copy(*mSavedAnimation, listBoneFilterNames);
-							printf("Animation has been replaced. Use Rename if you want to update the name)\n");
+							printf("Animation has been replaced. Use Rename if you want to update the name\n");
 						}
 					}
 					else{
@@ -473,7 +472,7 @@ int main(int argc, char** argv)
 		///////////////////////////////////////////////////////////////////////////////////////////////////
 		}else if (command == "COPYPASTERANGE"){
 
-			if (nbArg < 4)
+			if (nbArg < 5)
 			{
 				printf("Missing arguments. Try 'Help CopyPasteRange'\n");
 				continue;
@@ -534,7 +533,7 @@ int main(int argc, char** argv)
 							LibXenoverse::EANAnimation &animationToChange = eanFile->getAnimations().at(indexAnim_dest);
 							animationToChange.copy(*mSavedAnimation);
 
-							printf("Animation has been replaced. Use Rename if you want to update the name)\n");
+							printf("Animation has been replaced. Use Rename if you want to update the name\n");
 						}
 					}
 					else{
@@ -615,7 +614,7 @@ int main(int argc, char** argv)
 
 						LibXenoverse::EANAnimation &animationToChange = eanFile->getAnimations().at(indexAnim);
 						animationToChange.copy(*mSavedAnimation, listBoneFilterNames);
-						printf("Animation has been replaced. Use Rename if you want to update the name)\n");
+						printf("Animation has been replaced. Use Rename if you want to update the name\n");
 					}
 				}
 				else{
@@ -660,7 +659,7 @@ int main(int argc, char** argv)
 						LibXenoverse::EANAnimation &animationToChange = eanFile->getAnimations().at(indexAnim);
 						animationToChange.copy(*mSavedAnimation);
 
-						printf("Animation has been replaced. Use Rename if you want to update the name)\n");
+						printf("Animation has been replaced. Use Rename if you want to update the name\n");
 					}	
 				}
 				else{
@@ -702,7 +701,7 @@ int main(int argc, char** argv)
 						LibXenoverse::EANAnimation &animationToChange = eanFile->getAnimations().at(indexAnim);
 						animationToChange.append(*mSavedAnimation);
 
-						printf("Animation has been replaced. Use Rename if you want to update the name)\n");
+						printf("Animation has been replaced. Use Rename if you want to update the name\n");
 					}
 				}else {
 					printf("Error: No animation in clipboard, use Copy to select the source\n");
