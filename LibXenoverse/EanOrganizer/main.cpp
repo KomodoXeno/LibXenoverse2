@@ -53,7 +53,7 @@ int main(int argc, char** argv)
 
 	LibXenoverse::initializeDebuggingLog();
 
-	printf("Welcome to EAN Organizer v0.9.5kx\n\n");
+	printf("Welcome to EAN Organizer v0.9.8kx\n\n");
 
 
 	string help = "Commands:\n\
@@ -75,7 +75,7 @@ int main(int argc, char** argv)
 	'GetBoneList <indexEAN>'\n\
 	'AddBoneFilter <indexEAN> <indexBone1> [indexBone2] [indexBone3] ...'\n\
 	'AddAllBoneInFilterFor <indexEAN> <indexBone1_notIn> [indexBone2_notIn] [indexBone3_notIn] ...'\n\
-	'AddBoneFilterPreset <indexEAN> <presetName>'\n\
+	'AddBoneFilterPreset <indexEAN> <presetName>' OR 'AddPreset <indexEAN> <presetName>'\n\
 	'GetBoneFilter'\n\
 	'ResetBoneFilter'\n\
 	'PasteWithBoneFilter <indexEAN> <indexAnim>'\n\
@@ -99,18 +99,19 @@ int main(int argc, char** argv)
 	helptext["GETANIMLIST"] = "GetAnimList <indexEAN>\nGet list of animations within a specified EAN file\n\n";
 	helptext["GETBONELIST"] = "GetBoneList <indexEAN>\nGet list of bones within a specified EAN file\n\n";	
 	helptext["RENAME"] = "Rename <indexEAN> <indexAnim> <newName>\nRename a specified animation\n\n";
-	helptext["COPY"] = "Copy\nCopy on the specified animation to clipboard\n\n";
-	helptext["PASTE"] = "Paste <indexEAN> <indexAnim>\nPaste clipboard animation OVER destination animation\n\n";
+	helptext["COPY"] = "Copy\nCopy on the specified animation to a clipboard\n\n";
+	helptext["PASTE"] = "Paste <indexEAN> <indexAnim>\nPaste clipboard animation OVER destination animation - use PasteWithBoneFilter if you are using a boneFilter\n\n";
 	helptext["APPEND"] = "Append <indexEAN> <indexAnim>\nAdd the animation to an EAN.\nNote: A new keyframe will be added to the end, do not delete\n\n";
 	helptext["CUT"] = "Cut <indexEAN> <indexAnim> <indexKeyFrame_Start or -1> <indexKeyFrame_End or -1>\nCut the animation to keep the range. Use -1 to for default value\n\n";
 	helptext["FIXEDPOSITIONCOMPONENT"] = "FixedPositionComponent <indexEAN> <indexAnim> <indexBone> <component X Y or Z>\nUse the value on the first keyframe to replace all other keyframes, for all the component of a animation of a bone\n\n";
 	helptext["MOVEPOSITIONCOMPONENT"] = "MovePositionComponent <indexEAN> <indexAnim> <indexBone> <component X Y or Z> X.xxx\nMove the animation for a component of position of the bone on an animation\n\n";
-	helptext["ERASE"] = "Erase <indexEAN> <indexAnim> [indexAnim_rangeEnd]\nErase only Animation in indexAnim\nIf you use [indexAnim_rangeEnd], it will erase the entire range between the two indexAnim\n\n";
+	helptext["ERASE"] = "Erase <indexEAN> <indexAnim> [indexAnim_rangeEnd]\nErase only Animation in indexAnim\nIf you use [indexAnim_rangeEnd], it will erase the entire range between the two indexAnim - using a range starting from 0 will crash the program\n\n";
 	helptext["INSERT"] = "Insert <indexEAN> <indexAnim>\nInsert an animation before index of Animation specified\n\n";
 	helptext["ADDBONEFILTER"] = "AddBoneFilter <indexEAN> <indexBone1> [indexBone2] [indexBone3] ...\nBy using the filter, when you paste with bone filter, only the specified bones will be affected\ne.g. if you want to copy the animation from the tail, only specify the tail bones	<boneIndex> can be substituted for bone names e.g. b_R_Arm1\n\n";
 	helptext["GETBONEFILTER"] = "GetBoneFilter\nGet bones currently in the bone filter\n\n";
 	helptext["ADDALLBONEINFILTERFOR"] = "AddAllBoneInFilterFor <indexEAN> <indexBone1_notIn> [indexBone2_notIn] [indexBone3_notIn] ...\nQuick way to add all bones to filter except for the bones specified\n\n";
-	helptext["ADDBONEFILTERPRESET"] = "AddBoneFilterPreset <indexEAN> <presetName>\nAdd a preset list of bones to the bone filter:\n\n	'torso'\n	'head'\n	'arms'\n	'arm_left'\n	'arm_right'\n	'hands'\n	'hand_left'\n	'hand_right'\n	'legs'\n	'leg_left'\n	'leg_right'\n	'tail'\n	'wings'\n	'spines'\n	'sword'\n	'cane'\n	'spear'\n	'accessories'\n\n";
+	helptext["ADDBONEFILTERPRESET"] = "AddBoneFilterPreset <indexEAN> <presetName>\nAdd a preset list of bones to the bone filter\nNote: 'torso' and 'legs' both use pelvis bone to root, if you want the original pelvis transformation to take priority use no_pelvis options\n\nPresets:\n\n	'torso'\n	'head'\n	'arms'\n	'hands'\n	'legs'\n	'tail'\n	'wings'\n	'spines'\n	'sword'\n	'cane'\n	'spear'\n	'accessories'\n\n	'arm_left'\n	'arm_right'\n	'hand_left'\n	'hand_right'\n	'leg_left'\n	'leg_right'\n\n	'torso_no_pelvis'\n	'head_no_face'\n	'arms_no_hands'\n	'arm_left_no_hands'\n	'arm_right_no_hands'\n	'legs_no_pelvis'\n\n";
+	helptext["ADDPRESET"] = "AddPreset <indexEAN> <presetName>\nAdd a preset list of bones to the bone filter\nNote: 'torso' and 'legs' both use pelvis bone to root, if you want the original pelvis transformation to take priority use no_pelvis options\n\nPresets:\n\n	'torso'\n	'head'\n	'arms'\n	'hands'\n	'legs'\n	'tail'\n	'wings'\n	'spines'\n	'sword'\n	'cane'\n	'spear'\n	'accessories'\n\n	'arm_left'\n	'arm_right'\n	'hand_left'\n	'hand_right'\n	'leg_left'\n	'leg_right'\n\n	'torso_no_pelvis'\n	'head_no_face'\n	'arms_no_hands'\n	'arm_left_no_hands'\n	'arm_right_no_hands'\n	'legs_no_pelvis'\n\n";
 	helptext["RESETBONEFILTER"] = "ResetBoneFilter\nClear the bonefilter\n\n";
 	helptext["PASTEWITHBONEFILTER"] = "PasteWithBoneFilter <indexEAN> <indexAnim>\nPaste copied animation with bone filter'\n\n";
 	helptext["COPYPASTERANGE"] = "CopyPasteRange <indexEAN_Src> <indexEAN_Dest> <indexAnim_Start> <indexAnim_End> <indexAnim_DestinationStart>\nCopy and paste a range of animations\n<indexAnim_DestinationStart> refers to the start position of the range to paste\nfor example a value of 10 would mean your range is copied to index 10+ \n(this may add new animations to the EAN if you reach the end)\n\n";
@@ -123,7 +124,7 @@ int main(int argc, char** argv)
 	helptext["MATCHANIMATIONDURATION"] = "MatchAnimationDuration <indexEAN_src> <indexEAN_toMatch> <indexAnim_Start> <indexAnim_End>\nThe SECOND EAN will have the same duration of the animation from the source EAN\n\n";
 	helptext["QUIT"] = "Quit\nExit the program\n\n";
 	
-	printf((string("You can load several EAN Files, list their animations, copy an animation from one EAN to another. KEEP ORDER of animations if you want to use modified ean in game (need configurator).\n\n") + help + "\n").c_str());
+	printf((string("You can load several EAN Files, including camera files, list their animations, copy an animation from one EAN to another. KEEP ORDER of animations if you want to use modified ean in game (need configurator).\n\n") + help + "\n").c_str());
 
 	//helptext["MATCHCHARAID"] = "MatchCharaID <indexEAN> <XXX>\nSet the Character ID <XXX> to quickly rename all animations\n\n";
 	//helptext["MATCHCHARAID"] = "MatchCharaID <indexEAN> <XXX> <YYY>\nRename the Character ID <XXX> to quickly rename all animations\n\n"; 
@@ -1071,11 +1072,11 @@ int main(int argc, char** argv)
 
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if (command == "ADDBONEFILTERPRESET") {
+		}else if (command == "ADDBONEFILTERPRESET" || command == "ADDPRESET") {
 
 			if (nbArg < 2)
 			{
-				printf("Missing arguments. Try 'Help AddBoneFilterPreset' to list all available presets\n");
+				printf("Missing arguments. Try 'Help AddBoneFilterPreset' or 'Help AddPreset' to list all available presets\n");
 				continue;
 			}
 			string indexFile_str = arguments.at(0);
@@ -1085,10 +1086,22 @@ int main(int argc, char** argv)
 			{
 				line = "AddBoneFilter " + indexFile_str + " b_C_Base b_C_Pelvis g_C_Pelvis b_C_Spine1 b_C_Spine2 b_C_Chest";
 				automaticLine = true;
+			}else if (presetName == "torso_no_pelvis") {
+				line = "AddBoneFilter " + indexFile_str + " b_C_Base g_C_Pelvis b_C_Spine1 b_C_Spine2 b_C_Chest";
+				automaticLine = true;
 			}else if (presetName == "head") {
 				line = "AddBoneFilter " + indexFile_str + " b_C_Neck1 b_C_Head g_C_Head f_C_FaceRoot f_L_EyeInnerCorner f_R_EyeCorner f_L_EyeSocket f_C_ToothTop f_C_Jaw f_L_MouthBottom f_C_MouthBottom f_R_MouthBottom f_C_Tongue1 f_C_Tongue2 f_C_Tongue3 f_C_Tongue4 f_C_ToothBottom f_L_EyeCorner f_L_EyeBrows1 f_L_EyeBrows2 f_L_EyeBrows3 f_L_EyeBrowsHair3 f_L_EyeBrowsHair2 f_L_EyeBrowsHair1 f_L_CheekTop f_R_Eye f_R_EyeIris f_L_Eye f_L_EyeIris f_C_JawHalf f_L_MouthCorners f_L_CheekBottom f_R_CheekBottom f_R_MouthCorners f_C_NoseTop f_C_MouthTop f_L_EyelidBottom f_L_EyelidTop f_R_CheekTop f_R_EyeInnerCorner f_R_EyeSocket f_R_EyelidBottom f_R_EyelidTop f_R_EyeBrows1 f_R_EyeBrows2 f_R_EyeBrows3 f_R_EyeBrowsHair3 f_R_EyeBrowsHair2 f_R_EyeBrowsHair1 f_R_MouthTop f_L_MouthTop";
 				automaticLine = true;
+			}else if (presetName == "head_no_face") {
+				line = "AddBoneFilter " + indexFile_str + " b_C_Neck1 b_C_Head g_C_Head";
+				automaticLine = true;
+			}else if (presetName == "face") {
+				line = "AddBoneFilter " + indexFile_str + " f_C_FaceRoot f_L_EyeInnerCorner f_R_EyeCorner f_L_EyeSocket f_C_ToothTop f_C_Jaw f_L_MouthBottom f_C_MouthBottom f_R_MouthBottom f_C_Tongue1 f_C_Tongue2 f_C_Tongue3 f_C_Tongue4 f_C_ToothBottom f_L_EyeCorner f_L_EyeBrows1 f_L_EyeBrows2 f_L_EyeBrows3 f_L_EyeBrowsHair3 f_L_EyeBrowsHair2 f_L_EyeBrowsHair1 f_L_CheekTop f_R_Eye f_R_EyeIris f_L_Eye f_L_EyeIris f_C_JawHalf f_L_MouthCorners f_L_CheekBottom f_R_CheekBottom f_R_MouthCorners f_C_NoseTop f_C_MouthTop f_L_EyelidBottom f_L_EyelidTop f_R_CheekTop f_R_EyeInnerCorner f_R_EyeSocket f_R_EyelidBottom f_R_EyelidTop f_R_EyeBrows1 f_R_EyeBrows2 f_R_EyeBrows3 f_R_EyeBrowsHair3 f_R_EyeBrowsHair2 f_R_EyeBrowsHair1 f_R_MouthTop f_L_MouthTop";
+				automaticLine = true;
 			}else if (presetName == "legs") {
+				line = "AddBoneFilter " + indexFile_str + " b_C_Pelvis b_L_Leg1 b_L_Leg2 b_L_Foot g_L_Foot b_L_Toe b_L_Knee b_L_LegHelper b_R_Leg1 b_R_Leg2 b_R_Foot g_R_Foot b_R_Toe b_R_Knee b_R_LegHelper";
+				automaticLine = true;
+			}else if (presetName == "legs_no_pelvis") {
 				line = "AddBoneFilter " + indexFile_str + " b_L_Leg1 b_L_Leg2 b_L_Foot g_L_Foot b_L_Toe b_L_Knee b_L_LegHelper b_R_Leg1 b_R_Leg2 b_R_Foot g_R_Foot b_R_Toe b_R_Knee b_R_LegHelper";
 				automaticLine = true;
 			}else if (presetName == "leg_left") {
@@ -1098,13 +1111,22 @@ int main(int argc, char** argv)
 				line = "AddBoneFilter " + indexFile_str + " b_R_Leg1 b_R_Leg2 b_R_Foot g_R_Foot b_R_Toe b_R_Knee b_R_LegHelper";
 				automaticLine = true;
 			}else if (presetName == "arms") {
-				line = "AddBoneFilter " + indexFile_str + " b_L_Shoulder b_L_Arm1 b_L_Arm2 b_L_Hand h_L_Middle1 h_L_Middle2 h_L_Middle3 g_L_Hand h_L_Pinky1 h_L_Pinky2 h_L_Pinky3 h_L_Ring1 h_L_Ring2 h_L_Ring3 h_L_Index1 h_L_Index2 h_L_Index3 h_L_Thumb1 h_L_Thumb2 h_L_Thumb3 b_L_ArmRoll b_L_Elbow b_L_ArmHelper b_L_ArmorParts b_R_Shoulder b_R_Arm1 b_R_Elbow b_R_Arm2 b_R_Hand h_R_Middle1 h_R_Middle2 h_R_Middle3 g_R_Hand h_R_Pinky1 h_R_Pinky2 h_R_Pinky3 h_R_Ring1 h_R_Ring2 h_R_Ring3 h_R_Index1 h_R_Index2 h_R_Index3 h_R_Thumb1 h_R_Thumb2 h_R_Thumb3 b_R_ArmRoll b_R_ArmHelper b_R_ArmorParts";
+				line = "AddBoneFilter " + indexFile_str + " x_L_ArmZoom1 x_L_ArmZoom2 x_L_ArmZoom3 x_L_ArmZoom4 x_L_ArmZoom5 x_L_ArmZoom6 x_L_ArmZoom7 x_L_ArmZoom8 x_L_ArmZoom9 x_L_ArmZoom10 b_L_Shoulder b_L_Arm1 b_L_Arm2 b_L_Hand h_L_Middle1 h_L_Middle2 h_L_Middle3 g_L_Hand h_L_Pinky1 h_L_Pinky2 h_L_Pinky3 h_L_Ring1 h_L_Ring2 h_L_Ring3 h_L_Index1 h_L_Index2 h_L_Index3 h_L_Thumb1 h_L_Thumb2 h_L_Thumb3 b_L_ArmRoll b_L_Elbow b_L_ArmHelper b_L_ArmorParts x_R_ArmZoom1 x_R_ArmZoom2 x_R_ArmZoom3 x_R_ArmZoom4 x_R_ArmZoom5 x_R_ArmZoom6 x_R_ArmZoom7 x_R_ArmZoom8 x_R_ArmZoom9 x_R_ArmZoom10 b_R_Shoulder b_R_Arm1 b_R_Elbow b_R_Arm2 b_R_Hand h_R_Middle1 h_R_Middle2 h_R_Middle3 g_R_Hand h_R_Pinky1 h_R_Pinky2 h_R_Pinky3 h_R_Ring1 h_R_Ring2 h_R_Ring3 h_R_Index1 h_R_Index2 h_R_Index3 h_R_Thumb1 h_R_Thumb2 h_R_Thumb3 b_R_ArmRoll b_R_ArmHelper b_R_ArmorParts";
+				automaticLine = true;
+			}else if (presetName == "arms_no_hands") {
+				line = "AddBoneFilter " + indexFile_str + " x_L_ArmZoom1 x_L_ArmZoom2 x_L_ArmZoom3 x_L_ArmZoom4 x_L_ArmZoom5 x_L_ArmZoom6 x_L_ArmZoom7 x_L_ArmZoom8 x_L_ArmZoom9 x_L_ArmZoom10 b_L_Shoulder b_L_Arm1 b_L_Arm2 b_L_ArmRoll b_L_Elbow b_L_ArmHelper b_L_ArmorParts x_R_ArmZoom1 x_R_ArmZoom2 x_R_ArmZoom3 x_R_ArmZoom4 x_R_ArmZoom5 x_R_ArmZoom6 x_R_ArmZoom7 x_R_ArmZoom8 x_R_ArmZoom9 x_R_ArmZoom10 b_R_Shoulder b_R_Arm1 b_R_Elbow b_R_Arm2 b_R_ArmRoll b_R_ArmHelper b_R_ArmorParts";
 				automaticLine = true;
 			}else if (presetName == "arm_left") {
-				line = "AddBoneFilter " + indexFile_str + " b_L_Shoulder b_L_Arm1 b_L_Arm2 b_L_Hand h_L_Middle1 h_L_Middle2 h_L_Middle3 g_L_Hand h_L_Pinky1 h_L_Pinky2 h_L_Pinky3 h_L_Ring1 h_L_Ring2 h_L_Ring3 h_L_Index1 h_L_Index2 h_L_Index3 h_L_Thumb1 h_L_Thumb2 h_L_Thumb3 b_L_ArmRoll b_L_Elbow b_L_ArmHelper b_L_ArmorParts";
+				line = "AddBoneFilter " + indexFile_str + " x_L_ArmZoom1 x_L_ArmZoom2 x_L_ArmZoom3 x_L_ArmZoom4 x_L_ArmZoom5 x_L_ArmZoom6 x_L_ArmZoom7 x_L_ArmZoom8 x_L_ArmZoom9 x_L_ArmZoom10 b_L_Shoulder b_L_Arm1 b_L_Arm2 b_L_Hand h_L_Middle1 h_L_Middle2 h_L_Middle3 g_L_Hand h_L_Pinky1 h_L_Pinky2 h_L_Pinky3 h_L_Ring1 h_L_Ring2 h_L_Ring3 h_L_Index1 h_L_Index2 h_L_Index3 h_L_Thumb1 h_L_Thumb2 h_L_Thumb3 b_L_ArmRoll b_L_Elbow b_L_ArmHelper b_L_ArmorParts";
+				automaticLine = true;
+			}else if (presetName == "arm_left_no_hands") {
+				line = "AddBoneFilter " + indexFile_str + " x_L_ArmZoom1 x_L_ArmZoom2 x_L_ArmZoom3 x_L_ArmZoom4 x_L_ArmZoom5 x_L_ArmZoom6 x_L_ArmZoom7 x_L_ArmZoom8 x_L_ArmZoom9 x_L_ArmZoom10 b_L_Shoulder b_L_Arm1 b_L_Arm2 b_L_ArmRoll b_L_Elbow b_L_ArmHelper b_L_ArmorParts";
 				automaticLine = true;
 			}else if (presetName == "arm_right") {
-				line = "AddBoneFilter " + indexFile_str + " b_R_Shoulder b_R_Arm1 b_R_Elbow b_R_Arm2 b_R_Hand h_R_Middle1 h_R_Middle2 h_R_Middle3 g_R_Hand h_R_Pinky1 h_R_Pinky2 h_R_Pinky3 h_R_Ring1 h_R_Ring2 h_R_Ring3 h_R_Index1 h_R_Index2 h_R_Index3 h_R_Thumb1 h_R_Thumb2 h_R_Thumb3 b_R_ArmRoll b_R_ArmHelper b_R_ArmorParts";
+				line = "AddBoneFilter " + indexFile_str + " x_R_ArmZoom1 x_R_ArmZoom2 x_R_ArmZoom3 x_R_ArmZoom4 x_R_ArmZoom5 x_R_ArmZoom6 x_R_ArmZoom7 x_R_ArmZoom8 x_R_ArmZoom9 x_R_ArmZoom10 b_R_Shoulder b_R_Arm1 b_R_Elbow b_R_Arm2 b_R_Hand h_R_Middle1 h_R_Middle2 h_R_Middle3 g_R_Hand h_R_Pinky1 h_R_Pinky2 h_R_Pinky3 h_R_Ring1 h_R_Ring2 h_R_Ring3 h_R_Index1 h_R_Index2 h_R_Index3 h_R_Thumb1 h_R_Thumb2 h_R_Thumb3 b_R_ArmRoll b_R_ArmHelper b_R_ArmorParts";
+				automaticLine = true;
+			}else if (presetName == "arm_right_no_hands") {
+				line = "AddBoneFilter " + indexFile_str + " x_R_ArmZoom1 x_R_ArmZoom2 x_R_ArmZoom3 x_R_ArmZoom4 x_R_ArmZoom5 x_R_ArmZoom6 x_R_ArmZoom7 x_R_ArmZoom8 x_R_ArmZoom9 x_R_ArmZoom10 b_R_Shoulder b_R_Arm1 b_R_Arm2 b_R_ArmRoll b_R_Elbow b_R_ArmHelper b_R_ArmorParts";
 				automaticLine = true;
 			}else if (presetName == "hands") {
 				line = "AddBoneFilter " + indexFile_str + " b_L_Hand h_L_Middle1 h_L_Middle2 h_L_Middle3 g_L_Hand h_L_Pinky1 h_L_Pinky2 h_L_Pinky3 h_L_Ring1 h_L_Ring2 h_L_Ring3 h_L_Index1 h_L_Index2 h_L_Index3 h_L_Thumb1 h_L_Thumb2 h_L_Thumb3 b_R_Hand h_R_Middle1 h_R_Middle2 h_R_Middle3 g_R_Hand h_R_Pinky1 h_R_Pinky2 h_R_Pinky3 h_R_Ring1 h_R_Ring2 h_R_Ring3 h_R_Index1 h_R_Index2 h_R_Index3 h_R_Thumb1 h_R_Thumb2 h_R_Thumb3";
@@ -1136,15 +1158,18 @@ int main(int argc, char** argv)
 			}else if (presetName == "accessories") {
 				line = "AddBoneFilter " + indexFile_str + " a_x_flute a_x_glasses";
 				automaticLine = true;
+			}else if (presetName == "camera") {
+				line = "AddBoneFilter " + indexFile_str + " Node";
+				automaticLine = true;
 			}else {
-				printf("Unknown preset. Try 'Help AddBoneFilterPreset' to list all available presets\n");
+				printf("Unknown preset... try 'Help AddBoneFilterPreset' to list all available presets\n");
 			}
 
 			if (automaticLine)
 				printf("%s\n", line.c_str());
 
 
-		///////////////////////////////////////////////////////////////////////////////////////////////////
+			///////////////////////////////////////////////////////////////////////////////////////////////////
 		}else if (command == "RENAME"){
 
 			if (nbArg < 3)
